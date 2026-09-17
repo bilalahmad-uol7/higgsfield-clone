@@ -24,7 +24,12 @@ export function EffectsGrid() {
             key={effect.slug}
             className="group relative aspect-[3/4] overflow-hidden rounded-2xl bg-surface-tertiary"
           >
-            <Media media={effect.poster} alt={effect.name} sizes="(min-width: 1024px) 20vw, 45vw" />
+            <Media
+              media={effect.preview}
+              poster={effect.poster}
+              alt={effect.name}
+              sizes="(min-width: 1024px) 20vw, 45vw"
+            />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
             <h3 className="absolute left-3 top-3 text-sm font-medium text-white drop-shadow">
               {effect.name}
