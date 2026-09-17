@@ -61,19 +61,21 @@
   --radius-pill: 9999px;
 }
 
-:root {
-  color-scheme: dark;
-}
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
 
-* {
-  border-color: var(--color-white-8);
-}
+  * {
+    border-color: var(--color-white-8);
+  }
 
-body {
-  background: var(--color-bg);
-  color: var(--color-white-90);
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
+  body {
+    background: var(--color-bg);
+    color: var(--color-white-90);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
 }
 
 ::selection {
