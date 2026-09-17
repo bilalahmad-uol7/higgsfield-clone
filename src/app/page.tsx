@@ -1,8 +1,23 @@
+import { HeroCarousel } from "@/components/landing/HeroCarousel";
+import { PromoBar } from "@/components/landing/PromoBar";
+import { ModelTiles } from "@/components/landing/ModelTiles";
+import { McpSection } from "@/components/landing/McpSection";
+import { EffectsGrid } from "@/components/landing/EffectsGrid";
+import { GenjutsuSection } from "@/components/landing/GenjutsuSection";
+import { ProjectsShowcase } from "@/components/landing/ProjectsShowcase";
+import { SupercomputerCta } from "@/components/landing/SupercomputerCta";
+
 export default function Home() {
   return (
-    <div className="mx-auto max-w-[1400px] px-4 py-24 md:px-6">
-      <h1 className="hf-heading text-4xl font-medium">Landing — under construction</h1>
-      <p className="mt-3 text-white-60">Phase 1 shell check.</p>
-    </div>
+    <>
+      <HeroCarousel />
+      <PromoBar />
+      <ModelTiles />
+      <McpSection />
+      <EffectsGrid />
+      <GenjutsuSection />
+      <ProjectsShowcase />
+      <SupercomputerCta />
+    </>
   );
 }
