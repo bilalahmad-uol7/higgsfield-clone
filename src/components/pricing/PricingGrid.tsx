@@ -29,7 +29,7 @@ export function PricingGrid() {
               annual ? "bg-white text-black" : "text-white-70",
             )}
           >
-            Annual <span className="text-lime">save up to 25%</span>
+            Annual <span className={annual ? "text-black/60" : "text-lime"}>save up to 25%</span>
           </button>
         </div>
       </div>
