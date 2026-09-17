@@ -21,10 +21,24 @@ const spaceMono = Space_Mono({
   weight: ["400", "700"],
 });
 
+const TITLE = "Higgsfield AI — AI-native creative suite";
+const DESCRIPTION =
+  "Create images, videos, and voice content with Higgsfield AI from text prompts or references. Edit and upscale media, automate creative workflows with its AI agent, and generate content on web and mobile.";
+
 export const metadata: Metadata = {
-  title: "Higgsfield AI — AI-native creative suite",
-  description:
-    "Create images, videos, and voice content with Higgsfield AI from text prompts or references. Edit and upscale media, automate creative workflows with its AI agent, and generate content on web and mobile.",
+  title: { default: TITLE, template: "%s — Higgsfield" },
+  description: DESCRIPTION,
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    type: "website",
+    siteName: "Higgsfield",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
