@@ -1,1 +1,8 @@
 .claude/hooks/state/
+node_modules/
+.next/
+out/
+.env*.local
+*.tsbuildinfo
+next-env.d.ts
+.DS_Store

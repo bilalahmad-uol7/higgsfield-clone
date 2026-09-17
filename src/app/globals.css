@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+@theme {
+  /* Accent */
+  --color-lime: #d1fe17;
+  --color-magenta: #ff005b;
+  --color-error: #e72930;
+  --color-success: #53c546;
+
+  /* Surfaces (dark-only product) */
+  --color-surface-primary: #1c1e20;
+  --color-surface-secondary: #23262a;
+  --color-surface-secondary-hover: #2a2d32;
+  --color-surface-tertiary: #0f1113;
+  --color-surface-section: #18191c;
+  --color-bg: #0b0b0b;
+  --color-bg-raised: #131313;
+
+  /* White alpha ladder — borders, rings, hover overlays */
+  --color-white-3: #ffffff08;
+  --color-white-4: #ffffff0a;
+  --color-white-6: #ffffff0f;
+  --color-white-8: #ffffff14;
+  --color-white-10: #ffffff1a;
+  --color-white-16: #ffffff29;
+  --color-white-24: #ffffff3d;
+  --color-white-40: #ffffff66;
+  --color-white-60: #ffffff99;
+  --color-white-80: #ffffffcc;
+  --color-white-90: #ffffffe6;
+
+  /* Gray ramp */
+  --color-gray-1: #f7f7f8;
+  --color-gray-2: #e9eaec;
+  --color-gray-3: #dee0e3;
+  --color-gray-4: #c8cad0;
+  --color-gray-5: #babdc5;
+  --color-gray-6: #9ea2ad;
+  --color-gray-7: #7e869a;
+  --color-gray-8: #717684;
+  --color-gray-9: #5e636e;
+  --color-gray-10: #464a53;
+  --color-gray-11: #333333;
+  --color-gray-12: #1f2228;
+  --color-gray-13: #14151a;
+
+  /* Type */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-grotesk: var(--font-grotesk-src), var(--font-inter), sans-serif;
+  --font-mono: var(--font-space-mono), ui-monospace, monospace;
+
+  --text-display: 6.125rem;
+  --text-display--line-height: 1.02;
+  --text-display--letter-spacing: -0.02em;
+
+  /* Radii */
+  --radius-md: 0.625rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
+  --radius-pill: 9999px;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+* {
+  border-color: var(--color-white-8);
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-white-90);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-lime);
+  color: var(--color-bg);
+}
+
+.hf-heading {
+  font-family: var(--font-grotesk);
+  letter-spacing: -0.02em;
+  font-weight: 500;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
