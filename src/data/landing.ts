@@ -150,7 +150,19 @@ export type Project = {
   visibility: "Public";
   slug: string;
   thumbnail: MediaRef;
+  preview: MediaRef;
 };
+
+const PROJECT_PREVIEW_POOL: MediaRef[] = [
+  { cdn: "card/92c90c2a-ce2f-47bd-8cff-26c90eb9f351.mp4", local: "project-preview-1.mp4" },
+  { cdn: "card/16eebc9a-8310-4f68-8a02-1e2e6f109169.mp4", local: "project-preview-2.mp4" },
+  { cdn: "card/8b8270cd-dc63-4a34-88e7-3277536987fb.mp4", local: "project-preview-3.mp4" },
+  { cdn: "card/31293efb-7438-41c9-84cc-8bc820ce39b6.mp4", local: "project-preview-4.mp4" },
+  { cdn: "card/4da5ce4e-8483-4471-9564-0907b394d3e0.mp4", local: "project-preview-5.mp4" },
+  { cdn: "viral_hub/d877f71c-d2f3-44df-9317-f3ce6889bcb6.mp4", local: "project-preview-6.mp4" },
+  { cdn: "viral_hub/c129fb83-2014-4a37-a3f8-6c7dfeab0254.mp4", local: "project-preview-7.mp4" },
+  { cdn: "viral_hub/dba03734-6e8a-4337-acb4-17ce943563d8.mp4", local: "project-preview-8.mp4" },
+];
 
 const PROJECT_DEFS: { title: string; folder: string; file: string }[] = [
   {
@@ -195,12 +207,13 @@ const PROJECT_DEFS: { title: string; folder: string; file: string }[] = [
   },
 ];
 
-export const PROJECTS: Project[] = PROJECT_DEFS.map((p) => ({
+export const PROJECTS: Project[] = PROJECT_DEFS.map((p, i) => ({
   title: p.title,
   author: "Higgsfield Studio",
   visibility: "Public",
   slug: p.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""),
   thumbnail: { cdn: `${p.folder}/${p.file}`, local: `project-${p.folder}.webp` },
+  preview: PROJECT_PREVIEW_POOL[i % PROJECT_PREVIEW_POOL.length],
 }));
 
 export const PROMO_BAR = {

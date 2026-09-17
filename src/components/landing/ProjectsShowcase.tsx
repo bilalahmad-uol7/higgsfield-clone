@@ -20,7 +20,12 @@ export function ProjectsShowcase() {
             className="group flex flex-col gap-2 rounded-2xl border border-white-8 bg-surface-primary p-2.5 transition-colors hover:border-white-16"
           >
             <div className="relative aspect-[3/4] w-full overflow-hidden rounded-xl bg-surface-tertiary">
-              <Media media={project.thumbnail} alt={project.title} sizes="(min-width: 1024px) 22vw, 45vw" />
+              <Media
+                media={project.preview}
+                poster={project.thumbnail}
+                alt={project.title}
+                sizes="(min-width: 1024px) 22vw, 45vw"
+              />
               <Badge tone="neutral" className="absolute left-2 top-2">
                 {project.visibility}
               </Badge>
