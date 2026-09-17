@@ -6,6 +6,7 @@ import { Ticket, Building2, Globe } from "lucide-react";
 import { NAV_LEFT, NAV_RIGHT } from "@/data/nav";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { HiggsfieldLogo } from "@/components/ui/HiggsfieldLogo";
 import { cn } from "@/lib/cn";
 
 export function SiteHeader() {
@@ -14,8 +15,9 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-white-8 bg-bg/80 backdrop-blur-md">
       <div className="mx-auto flex h-13 max-w-[1400px] items-center gap-4 px-4 md:px-6">
-        <Link href="/" className="hf-heading shrink-0 text-lg font-semibold tracking-tight">
-          Higgsfield
+        <Link href="/" className="hf-heading flex shrink-0 items-center gap-2 text-lg font-semibold tracking-tight">
+          <HiggsfieldLogo className="h-5 w-5 text-lime" />
+          <span>Higgsfield</span>
         </Link>
 
         <nav className="hidden min-w-0 flex-1 items-center gap-0.5 overflow-x-auto whitespace-nowrap lg:flex [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
