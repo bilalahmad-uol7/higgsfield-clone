@@ -42,6 +42,6 @@ export const NAV: NavItem[] = [
       { label: "Supercomputer", href: "/supercomputer", description: "One agent for your stack" },
     ],
   },
-  { label: "Pricing", href: "/pricing", badge: "30% off" },
+  { label: "Pricing", href: "/pricing", badge: "Up to 25% off" },
   { label: "Enterprise", href: "/pricing?plan=enterprise" },
 ];
