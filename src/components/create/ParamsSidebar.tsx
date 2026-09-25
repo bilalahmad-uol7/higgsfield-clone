@@ -52,14 +52,14 @@ export function ParamsSidebar({
   }
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-6">
       <Segmented label="Type" options={["image", "video"] as const} value={type} onChange={handleTypeChange} />
 
       <PromptBox value={prompt} onChange={setPrompt} />
 
       <div>
-        <label className="text-xs font-medium uppercase tracking-wide text-white-40">Reference image</label>
-        <label className="mt-2 flex h-20 cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-white-16 text-xs text-white-60 hover:border-white-24">
+        <label className="slate text-white-40">Reference image</label>
+        <label className="slate mt-2 flex h-16 cursor-pointer items-center justify-center gap-2 border border-dashed border-white-16 text-white-60 transition-colors hover:border-paper hover:text-paper">
           <ImagePlus size={16} />
           {referenceFileName ?? "Add image"}
           <input

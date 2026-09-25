@@ -68,6 +68,7 @@
   --animate-marquee: marquee var(--marquee-duration, 40s) linear infinite;
   --animate-rec: rec 1.6s steps(1, end) infinite;
   --animate-grain: grain 0.8s steps(6) infinite;
+  --animate-develop: develop 1.8s cubic-bezier(0.22, 1, 0.36, 1) both;
 
   @keyframes marquee {
     from {
@@ -85,6 +86,17 @@
     61%,
     100% {
       opacity: 0.15;
+    }
+  }
+  /* A finished take "develops" like film: dark, soft and gray to full color. */
+  @keyframes develop {
+    from {
+      filter: grayscale(1) brightness(0.4) blur(8px);
+      transform: scale(1.04);
+    }
+    to {
+      filter: grayscale(0) brightness(1) blur(0);
+      transform: scale(1);
     }
   }
   @keyframes grain {
