@@ -12,7 +12,7 @@ export function ToolCard({ tool }: { tool: Tool }) {
       <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-surface-tertiary">
         <Media media={tool.media} alt={tool.name} sizes="(min-width: 1024px) 24vw, 45vw" />
         {tool.badge && (
-          <Badge tone={tool.badge === "core" ? "neutral" : "lime"} className="absolute left-2 top-2">
+          <Badge tone={tool.badge === "core" ? "neutral" : "rec"} className="absolute left-2 top-2">
             {tool.badge}
           </Badge>
         )}

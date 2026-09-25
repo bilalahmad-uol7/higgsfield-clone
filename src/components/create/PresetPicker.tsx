@@ -31,7 +31,7 @@ export function PresetPicker({
             onClick={() => onChange(effect.slug)}
             className={cn(
               "group relative aspect-square overflow-hidden rounded-lg border",
-              value === effect.slug ? "border-lime" : "border-white-8 hover:border-white-16",
+              value === effect.slug ? "border-rec" : "border-white-8 hover:border-white-16",
             )}
           >
             <Media media={effect.poster} alt={effect.name} sizes="80px" />

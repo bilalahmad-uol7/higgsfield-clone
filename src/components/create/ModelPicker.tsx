@@ -24,7 +24,7 @@ export function ModelPicker({
             onClick={() => onChange(model.id)}
             className={cn(
               "rounded-lg px-3 py-1.5 text-xs font-medium transition-colors",
-              value === model.id ? "bg-lime text-black" : "bg-white-6 text-white-70 hover:bg-white-10",
+              value === model.id ? "bg-rec text-black" : "bg-white-6 text-white-70 hover:bg-white-10",
             )}
           >
             {model.name}

@@ -1,20 +1,22 @@
 @import "tailwindcss";
 
 @theme {
-  /* Accent */
-  --color-lime: #d1fe17;
-  --color-magenta: #ff005b;
+  /* Noir palette — black & paper, one warm accent */
+  --color-ink: #0a0a0a;
+  --color-ink-raised: #121212;
+  --color-paper: #efebe4;
+  --color-rec: #ff3b2f;
   --color-error: #e72930;
   --color-success: #53c546;
 
   /* Surfaces (dark-only product) */
-  --color-surface-primary: #1c1e20;
-  --color-surface-secondary: #23262a;
-  --color-surface-secondary-hover: #2a2d32;
-  --color-surface-tertiary: #0f1113;
-  --color-surface-section: #18191c;
-  --color-bg: #0b0b0b;
-  --color-bg-raised: #131313;
+  --color-surface-primary: #141414;
+  --color-surface-secondary: #1b1b1b;
+  --color-surface-secondary-hover: #232323;
+  --color-surface-tertiary: #0d0d0d;
+  --color-surface-section: #101010;
+  --color-bg: #0a0a0a;
+  --color-bg-raised: #121212;
 
   /* White alpha ladder — borders, rings, hover overlays */
   --color-white-3: #ffffff08;
@@ -26,6 +28,7 @@
   --color-white-24: #ffffff3d;
   --color-white-40: #ffffff66;
   --color-white-60: #ffffff99;
+  --color-white-70: #ffffffb3;
   --color-white-80: #ffffffcc;
   --color-white-90: #ffffffe6;
 
@@ -44,21 +47,66 @@
   --color-gray-12: #1f2228;
   --color-gray-13: #14151a;
 
-  /* Type */
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-grotesk: var(--font-grotesk-src), var(--font-inter), sans-serif;
-  --font-mono: var(--font-space-mono), ui-monospace, monospace;
+  /* Type — editorial serif for display, grotesk body, mono for slates */
+  --font-sans: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-instrument), ui-serif, Georgia, serif;
+  --font-grotesk: var(--font-serif);
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
 
   --text-display: 6.125rem;
   --text-display--line-height: 1.02;
   --text-display--letter-spacing: -0.02em;
 
-  /* Radii */
-  --radius-md: 0.625rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
-  --radius-2xl: 1.25rem;
+  /* Radii — sharp, cut-film edges */
+  --radius-md: 0.1875rem;
+  --radius-lg: 0.25rem;
+  --radius-xl: 0.3125rem;
+  --radius-2xl: 0.375rem;
   --radius-pill: 9999px;
+
+  /* Motion */
+  --animate-marquee: marquee var(--marquee-duration, 40s) linear infinite;
+  --animate-rec: rec 1.6s steps(1, end) infinite;
+  --animate-grain: grain 0.8s steps(6) infinite;
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @keyframes rec {
+    0%,
+    60% {
+      opacity: 1;
+    }
+    61%,
+    100% {
+      opacity: 0.15;
+    }
+  }
+  @keyframes grain {
+    0% {
+      transform: translate(0, 0);
+    }
+    20% {
+      transform: translate(-3%, 2%);
+    }
+    40% {
+      transform: translate(2%, -3%);
+    }
+    60% {
+      transform: translate(-2%, -1%);
+    }
+    80% {
+      transform: translate(3%, 3%);
+    }
+    100% {
+      transform: translate(0, 0);
+    }
+  }
 }
 
 @layer base {
@@ -72,25 +120,76 @@
 
   body {
     background: var(--color-bg);
-    color: var(--color-white-90);
+    color: var(--color-paper);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
   }
 }
 
 ::selection {
-  background: var(--color-lime);
-  color: var(--color-bg);
+  background: var(--color-rec);
+  color: var(--color-ink);
 }
 
+/* Legacy heading hook — now the editorial serif. Instrument Serif ships one
+   weight, so block the browser from faking bold when a font-medium sits
+   alongside it. */
 .hf-heading {
-  font-family: var(--font-grotesk);
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-synthesis: none;
+  letter-spacing: -0.01em;
+}
+
+@utility display {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-synthesis: none;
   letter-spacing: -0.02em;
-  font-weight: 500;
+  line-height: 0.92;
+}
+
+/* Film slate label: mono, uppercase, tracked out. */
+@utility slate {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* The site's through-line: footage is black & white until it's in focus. */
+@utility noir-media {
+  filter: grayscale(1) contrast(1.08) brightness(0.9);
+  transition: filter 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  &:is(.is-live, .group:hover *, :hover) {
+    filter: grayscale(0) contrast(1) brightness(1);
+  }
+}
+
+/* Film-strip perforations along top & bottom edges. */
+@utility sprockets {
+  --hole: rgb(255 255 255 / 0.14);
+  background-image:
+    repeating-linear-gradient(90deg, transparent 0 10px, var(--hole) 10px 22px, transparent 22px 34px),
+    repeating-linear-gradient(90deg, transparent 0 10px, var(--hole) 10px 22px, transparent 22px 34px);
+  background-size:
+    100% 10px,
+    100% 10px;
+  background-position:
+    0 8px,
+    0 calc(100% - 8px);
+  background-repeat: repeat-x;
+}
+
+@utility mask-fade-x {
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;

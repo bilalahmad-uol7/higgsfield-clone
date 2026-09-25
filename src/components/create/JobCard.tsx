@@ -59,7 +59,7 @@ export function JobCard({ job }: { job: Job }) {
           </div>
           <div className="mt-2 h-1.5 w-full overflow-hidden rounded-pill bg-white-8">
             <div
-              className="h-full rounded-pill bg-lime transition-[width] duration-300 ease-out"
+              className="h-full rounded-pill bg-rec transition-[width] duration-300 ease-out"
               style={{ width: `${Math.max(4, job.progress)}%` }}
             />
           </div>

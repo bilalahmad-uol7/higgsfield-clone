@@ -22,7 +22,7 @@ export function GenerateButton({
         disabled={disabled || insufficientCredits}
         className={cn(
           "flex h-12 w-full items-center justify-center gap-2 rounded-pill text-sm font-semibold transition-colors",
-          "bg-lime text-black hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40",
+          "bg-rec text-black hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40",
         )}
       >
         Generate

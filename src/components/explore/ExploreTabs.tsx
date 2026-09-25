@@ -49,7 +49,7 @@ export function ExploreTabs({ initialTab }: { initialTab?: string }) {
             onClick={() => selectTab(t)}
             className={cn(
               "rounded-pill px-4 py-2 text-sm font-medium transition-colors",
-              tab === t ? "bg-lime text-black" : "bg-white-6 text-white-70 hover:bg-white-10",
+              tab === t ? "bg-rec text-black" : "bg-white-6 text-white-70 hover:bg-white-10",
             )}
           >
             {t}

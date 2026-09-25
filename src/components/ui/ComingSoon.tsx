@@ -21,7 +21,7 @@ export function ComingSoon({
           <Media media={media} alt={title} sizes="1000px" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
           <div className="absolute inset-x-0 bottom-0 flex flex-col gap-2 p-6 sm:p-8">
-            <Badge tone="lime" className="w-fit">
+            <Badge tone="rec" className="w-fit">
               Coming soon
             </Badge>
             <h1 className="hf-heading text-2xl font-medium text-white sm:text-3xl">{title}</h1>
@@ -32,7 +32,7 @@ export function ComingSoon({
       <div className="mt-6 flex justify-center gap-3">
         <Link
           href={cta?.href ?? "/explore"}
-          className="rounded-pill bg-lime px-5 py-2.5 text-sm font-semibold text-black hover:brightness-95"
+          className="rounded-pill bg-rec px-5 py-2.5 text-sm font-semibold text-black hover:brightness-95"
         >
           {cta?.label ?? "Explore what's live"}
         </Link>

@@ -48,7 +48,7 @@ export function AuthForm({
           className="rounded-xl border border-white-8 bg-surface-tertiary px-4 py-3 text-sm text-white-90 placeholder:text-white-40 focus:border-white-24 focus:outline-none"
         />
 
-        <Button type="submit" variant="lime" className="mt-2 w-full">
+        <Button type="submit" variant="primary" className="mt-2 w-full">
           {isSignup ? "Sign up" : "Log in"}
         </Button>
       </form>
