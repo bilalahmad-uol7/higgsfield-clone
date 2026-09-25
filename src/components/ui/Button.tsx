@@ -2,21 +2,20 @@ import Link from "next/link";
 import { type ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
-type Variant = "lime" | "white" | "outline" | "ghost";
+type Variant = "primary" | "white" | "outline" | "ghost";
 type Size = "sm" | "md" | "lg";
 
 const variantClass: Record<Variant, string> = {
-  lime: "bg-lime text-black hover:brightness-95",
-  white:
-    "bg-white text-black shadow-[0_9px_22px_rgba(0,0,0,0.25),inset_0_-3px_0_rgba(0,0,0,0.12)] hover:brightness-95",
-  outline: "bg-transparent text-white-90 border border-white-16 hover:bg-white-6",
-  ghost: "bg-transparent text-white-90 hover:bg-white-6",
+  primary: "bg-rec text-ink hover:bg-paper",
+  white: "bg-paper text-ink hover:bg-rec",
+  outline: "bg-transparent text-paper border border-white-24 hover:border-paper hover:bg-white-6",
+  ghost: "bg-transparent text-white-80 hover:text-paper hover:bg-white-6",
 };
 
 const sizeClass: Record<Size, string> = {
-  sm: "h-8 px-3 text-sm",
-  md: "h-10 px-4 text-sm",
-  lg: "h-12 px-6 text-base",
+  sm: "h-8 px-3 text-[11px]",
+  md: "h-10 px-4 text-xs",
+  lg: "h-13 px-6 text-[13px]",
 };
 
 type BaseProps = {
@@ -37,7 +36,7 @@ type ButtonAsLink = BaseProps & { href: string } & Omit<
 export function Button(props: ButtonAsButton | ButtonAsLink) {
   const { variant = "white", size = "md", className, children, ...rest } = props;
   const classes = cn(
-    "inline-flex items-center justify-center gap-2 rounded-pill font-medium whitespace-nowrap transition-colors duration-150 disabled:opacity-40 disabled:pointer-events-none",
+    "inline-flex items-center justify-center gap-2 rounded-sm font-mono font-medium uppercase tracking-[0.12em] whitespace-nowrap transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rec disabled:opacity-40 disabled:pointer-events-none",
     variantClass[variant],
     sizeClass[size],
     className,

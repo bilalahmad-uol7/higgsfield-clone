@@ -15,18 +15,23 @@ export function ModelPicker({
 
   return (
     <div>
-      <label className="text-xs font-medium uppercase tracking-wide text-white-40">Model</label>
-      <div className="mt-2 flex flex-wrap gap-1.5">
-        {models.map((model) => (
+      <label className="slate text-white-40">Model</label>
+      <div role="radiogroup" aria-label="Model" className="mt-2 flex flex-col gap-px border border-white-10 bg-white-10">
+        {models.map((model, i) => (
           <button
             key={model.id}
             type="button"
+            role="radio"
+            aria-checked={value === model.id}
             onClick={() => onChange(model.id)}
             className={cn(
-              "rounded-lg px-3 py-1.5 text-xs font-medium transition-colors",
-              value === model.id ? "bg-lime text-black" : "bg-white-6 text-white-70 hover:bg-white-10",
+              "flex items-center gap-3 px-3 py-2.5 text-left text-sm transition-colors",
+              value === model.id ? "bg-paper text-ink" : "bg-ink text-white-70 hover:bg-ink-raised hover:text-paper",
             )}
           >
+            <span className={cn("slate", value === model.id ? "text-rec" : "text-white-40")}>
+              {String(i + 1).padStart(2, "0")}
+            </span>
             {model.name}
           </button>
         ))}

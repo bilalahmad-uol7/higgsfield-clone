@@ -1,23 +1,23 @@
-import { HeroCarousel } from "@/components/landing/HeroCarousel";
-import { PromoBar } from "@/components/landing/PromoBar";
-import { ModelTiles } from "@/components/landing/ModelTiles";
-import { McpSection } from "@/components/landing/McpSection";
-import { EffectsGrid } from "@/components/landing/EffectsGrid";
-import { GenjutsuSection } from "@/components/landing/GenjutsuSection";
-import { ProjectsShowcase } from "@/components/landing/ProjectsShowcase";
-import { SupercomputerCta } from "@/components/landing/SupercomputerCta";
+import { HeroReel } from "@/components/home/HeroReel";
+import { StudioMarquee } from "@/components/home/StudioMarquee";
+import { ReelStrip } from "@/components/home/ReelStrip";
+import { HowItWorks } from "@/components/home/HowItWorks";
+import { FeatureBento } from "@/components/home/FeatureBento";
+import { PricingSection } from "@/components/home/PricingSection";
+import { Faq } from "@/components/layout/Faq";
+import { FinalCta } from "@/components/home/FinalCta";
 
 export default function Home() {
   return (
     <>
-      <HeroCarousel />
-      <PromoBar />
-      <ModelTiles />
-      <McpSection />
-      <EffectsGrid />
-      <GenjutsuSection />
-      <ProjectsShowcase />
-      <SupercomputerCta />
+      <HeroReel />
+      <StudioMarquee />
+      <ReelStrip />
+      <HowItWorks />
+      <FeatureBento />
+      <PricingSection />
+      <Faq />
+      <FinalCta />
     </>
   );
 }

@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import type { Job } from "@/lib/generation/types";
 import { Media } from "@/components/ui/Media";
+import { Timecode } from "@/components/motion/Timecode";
 import { useGenerationStore } from "@/lib/generation/store";
+import { cn } from "@/lib/cn";
 
 const STAGE_LABEL: Record<Job["stage"], (job: Job) => string> = {
   queued: (job) => `Queued — position ${job.queuePosition}`,
@@ -24,9 +26,11 @@ function useElapsed(createdAt: number, running: boolean) {
   return elapsed;
 }
 
-export function JobCard({ job }: { job: Job }) {
+// One roll of the camera, laid out like a take on a film slate.
+export function JobCard({ job, take }: { job: Job; take: number }) {
   const cancelJob = useGenerationStore((s) => s.cancelJob);
-  const elapsed = useElapsed(job.createdAt, job.status === "running");
+  const running = job.status === "running";
+  const elapsed = useElapsed(job.createdAt, running);
   const seconds = (elapsed / 1000).toFixed(1);
 
   const label = job.params.preset
@@ -34,32 +38,44 @@ export function JobCard({ job }: { job: Job }) {
     : job.params.model.replace(/-/g, " ");
 
   return (
-    <div className="rounded-2xl border border-white-8 bg-surface-primary p-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm font-medium capitalize text-white-90">{label}</p>
-          <p className="mt-0.5 line-clamp-1 text-xs text-white-40">{job.params.prompt || "No prompt"}</p>
+    <article className="border border-white-10 bg-ink-raised">
+      <header className="flex items-center justify-between gap-4 border-b border-white-10 px-4 py-3">
+        <div className="slate flex min-w-0 items-center gap-3 text-white-40">
+          <span className={running ? "text-rec" : "text-paper"}>Take {String(take).padStart(2, "0")}</span>
+          <span className="truncate">
+            {label} · {job.params.aspectRatio} · {job.params.quality} · ×{job.params.batchSize}
+          </span>
         </div>
-        {job.status === "running" && (
-          <button
-            aria-label="Cancel generation"
-            onClick={() => cancelJob(job.id)}
-            className="flex h-7 w-7 items-center justify-center rounded-full bg-white-6 text-white-60 hover:bg-white-10"
-          >
-            <X size={14} />
-          </button>
-        )}
-      </div>
-
-      {job.status === "running" && (
-        <div className="mt-3">
-          <div className="flex items-center justify-between text-xs text-white-60">
-            <span>{STAGE_LABEL[job.stage](job)}</span>
-            <span>{seconds}s</span>
+        {running ? (
+          <div className="flex shrink-0 items-center gap-3">
+            <span className="slate flex items-center gap-2 text-paper">
+              <span className="h-1.5 w-1.5 animate-rec rounded-full bg-rec" />
+              Rec <Timecode startAt={job.createdAt} className="text-white-60" />
+            </span>
+            <button
+              aria-label="Cancel generation"
+              onClick={() => cancelJob(job.id)}
+              className="flex h-7 w-7 items-center justify-center border border-white-16 text-white-60 hover:border-rec hover:text-rec"
+            >
+              <X size={13} />
+            </button>
           </div>
-          <div className="mt-2 h-1.5 w-full overflow-hidden rounded-pill bg-white-8">
+        ) : (
+          <span className="slate shrink-0 text-white-40">{job.status === "cancelled" ? "Cut" : "Wrapped"}</span>
+        )}
+      </header>
+
+      <p className="px-4 pt-3 text-sm text-white-70">{job.params.prompt || "No prompt"}</p>
+
+      {running && (
+        <div className="px-4 pt-3">
+          <div className="slate flex items-center justify-between text-white-60">
+            <span>{STAGE_LABEL[job.stage](job)}</span>
+            <span className="tabular-nums">{seconds}s</span>
+          </div>
+          <div className="mt-2 h-0.5 w-full bg-white-8">
             <div
-              className="h-full rounded-pill bg-lime transition-[width] duration-300 ease-out"
+              className="h-full bg-rec transition-[width] duration-300 ease-out"
               style={{ width: `${Math.max(4, job.progress)}%` }}
             />
           </div>
@@ -67,27 +83,30 @@ export function JobCard({ job }: { job: Job }) {
       )}
 
       {job.status === "cancelled" && (
-        <p className="mt-3 text-xs text-white-40">Cancelled — credits refunded.</p>
+        <p className="slate px-4 pt-3 text-white-40">Cut before wrap — credits refunded.</p>
       )}
 
-      {job.results.length > 0 && (
-        <div className={`mt-3 grid gap-2 ${job.params.batchSize > 1 ? "grid-cols-2" : "grid-cols-1"}`}>
+      {job.results.length > 0 ? (
+        <div className={cn("grid gap-1 p-4", job.params.batchSize > 1 ? "grid-cols-2" : "grid-cols-1")}>
           {job.results.slice(0, job.revealedCount).map((result, i) => (
-            <div
-              key={i}
-              className="relative aspect-square overflow-hidden rounded-xl bg-surface-tertiary"
-            >
-              <Media media={result.media} alt={`Result ${i + 1}`} sizes="(min-width: 1024px) 20vw, 45vw" />
+            <div key={i} className="relative aspect-video overflow-hidden bg-ink">
+              <div className="absolute inset-0 animate-develop">
+                <Media media={result.media} alt={`Take ${take}, result ${i + 1}`} sizes="(min-width: 1024px) 30vw, 90vw" />
+              </div>
+              <span className="slate absolute left-2 top-2 text-paper/80">
+                {String(take).padStart(2, "0")}.{i + 1}
+              </span>
             </div>
           ))}
           {Array.from({ length: job.params.batchSize - job.revealedCount }).map((_, i) => (
-            <div
-              key={`pending-${i}`}
-              className="aspect-square animate-pulse rounded-xl bg-white-6"
-            />
+            <div key={`pending-${i}`} className="relative flex aspect-video items-center justify-center bg-ink">
+              <span className="slate animate-pulse text-white-24">Developing…</span>
+            </div>
           ))}
         </div>
+      ) : (
+        <div className="pb-4" />
       )}
-    </div>
+    </article>
   );
 }

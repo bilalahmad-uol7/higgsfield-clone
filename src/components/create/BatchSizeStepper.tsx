@@ -9,24 +9,24 @@ export function BatchSizeStepper({
 }) {
   return (
     <div>
-      <label className="text-xs font-medium uppercase tracking-wide text-white-40">Batch size</label>
-      <div className="mt-2 flex w-fit items-center gap-3 rounded-lg bg-white-6 px-2 py-1.5">
+      <label className="slate text-white-40">Takes per roll</label>
+      <div className="mt-2 flex w-fit items-center border border-white-10">
         <button
           type="button"
           aria-label="Decrease batch size"
           onClick={() => onChange(Math.max(1, value - 1))}
           disabled={value <= 1}
-          className="flex h-6 w-6 items-center justify-center rounded-md text-white-70 hover:bg-white-10 disabled:opacity-30"
+          className="flex h-10 w-10 items-center justify-center text-white-70 hover:bg-white-6 hover:text-paper disabled:opacity-30"
         >
           <Minus size={14} />
         </button>
-        <span className="w-4 text-center text-sm font-medium text-white-90">{value}</span>
+        <span className="display w-12 border-x border-white-10 text-center text-2xl leading-10 text-paper">{value}</span>
         <button
           type="button"
           aria-label="Increase batch size"
           onClick={() => onChange(Math.min(4, value + 1))}
           disabled={value >= 4}
-          className="flex h-6 w-6 items-center justify-center rounded-md text-white-70 hover:bg-white-10 disabled:opacity-30"
+          className="flex h-10 w-10 items-center justify-center text-white-70 hover:bg-white-6 hover:text-paper disabled:opacity-30"
         >
           <Plus size={14} />
         </button>

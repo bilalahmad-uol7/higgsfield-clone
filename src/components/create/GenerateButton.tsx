@@ -1,4 +1,3 @@
-import { Zap } from "lucide-react";
 import { cn } from "@/lib/cn";
 
 export function GenerateButton({
@@ -21,20 +20,20 @@ export function GenerateButton({
         onClick={onClick}
         disabled={disabled || insufficientCredits}
         className={cn(
-          "flex h-12 w-full items-center justify-center gap-2 rounded-pill text-sm font-semibold transition-colors",
-          "bg-lime text-black hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40",
+          "group flex h-14 w-full items-center justify-between px-5 font-mono text-sm font-medium uppercase tracking-[0.16em] transition-colors",
+          "bg-rec text-ink hover:bg-paper disabled:cursor-not-allowed disabled:opacity-40",
         )}
       >
-        Generate
-        <span className="flex items-center gap-1 rounded-pill bg-black/10 px-2 py-0.5 text-xs">
-          <Zap size={12} className="fill-current" />
-          {cost}
+        <span className="flex items-center gap-3">
+          <span className="h-2.5 w-2.5 rounded-full bg-ink group-enabled:group-hover:animate-rec" />
+          Roll camera
         </span>
+        <span className="text-xs tracking-[0.1em]">{cost} cr</span>
       </button>
       {insufficientCredits && (
-        <p className="text-center text-xs text-error">Not enough credits — top up to continue.</p>
+        <p className="slate text-center text-error">Not enough credits — top up to continue.</p>
       )}
-      <p className="text-center text-xs text-white-40">{credits} credits available</p>
+      <p className="slate text-center text-white-40">{credits} credits in the bank</p>
     </div>
   );
 }

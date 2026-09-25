@@ -7,13 +7,19 @@ export function PromptBox({
 }) {
   return (
     <div>
-      <label className="text-xs font-medium uppercase tracking-wide text-white-40">Prompt</label>
+      <div className="flex items-center justify-between">
+        <label htmlFor="prompt" className="slate text-white-40">
+          Prompt
+        </label>
+        <span className="slate text-white-24">{value.length} chr</span>
+      </div>
       <textarea
+        id="prompt"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        placeholder="Describe what you want to generate…"
-        rows={4}
-        className="mt-2 w-full resize-none rounded-xl border border-white-8 bg-surface-tertiary p-3 text-sm text-white-90 placeholder:text-white-40 focus:border-white-24 focus:outline-none"
+        placeholder="Describe the shot like you'd brief a DP — subject, light, lens, mood…"
+        rows={5}
+        className="mt-2 w-full resize-none border border-white-10 bg-ink p-3 text-[15px] leading-relaxed text-paper placeholder:text-white-24 focus:border-rec focus:outline-none"
       />
     </div>
   );

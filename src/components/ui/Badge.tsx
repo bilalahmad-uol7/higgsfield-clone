@@ -1,10 +1,10 @@
 import { cn } from "@/lib/cn";
 
-type Tone = "lime" | "neutral" | "magenta";
+type Tone = "rec" | "neutral";
 
 export function Badge({
   children,
-  tone = "lime",
+  tone = "rec",
   className,
 }: {
   children: React.ReactNode;
@@ -12,14 +12,13 @@ export function Badge({
   className?: string;
 }) {
   const toneClass: Record<Tone, string> = {
-    lime: "bg-lime text-black",
+    rec: "bg-rec text-ink",
     neutral: "bg-white-10 text-white-90",
-    magenta: "bg-magenta text-white",
   };
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-pill px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide",
+        "inline-flex items-center rounded-xs px-1.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-[0.1em]",
         toneClass[tone],
         className,
       )}

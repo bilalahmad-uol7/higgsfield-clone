@@ -19,41 +19,45 @@ export function AuthForm({
 
   return (
     <div className="mx-auto w-full max-w-sm">
-      <h1 className="hf-heading text-center text-2xl font-medium">
+      <p className="slate text-rec">{isSignup ? "New crew member" : "Call time"}</p>
+      <h1 className="display mt-4 text-5xl">
         {isSignup ? "Create your account" : "Welcome back"}
       </h1>
-      <p className="mt-2 text-center text-sm text-white-60">
+      <p className="mt-3 text-sm text-white-60">
         {isSignup ? "10 free trial credits on signup." : "Log in to keep generating."}
       </p>
 
-      <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-3">
+      <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-3">
         {isSignup && (
           <input
             type="text"
             required
             placeholder="Full name"
-            className="rounded-xl border border-white-8 bg-surface-tertiary px-4 py-3 text-sm text-white-90 placeholder:text-white-40 focus:border-white-24 focus:outline-none"
+            aria-label="Full name"
+            className="border border-white-10 bg-ink px-4 py-3.5 text-[15px] text-paper placeholder:text-white-40 focus:border-rec focus:outline-none"
           />
         )}
         <input
           type="email"
           required
           placeholder="Email"
-          className="rounded-xl border border-white-8 bg-surface-tertiary px-4 py-3 text-sm text-white-90 placeholder:text-white-40 focus:border-white-24 focus:outline-none"
+          aria-label="Email"
+          className="border border-white-10 bg-ink px-4 py-3.5 text-[15px] text-paper placeholder:text-white-40 focus:border-rec focus:outline-none"
         />
         <input
           type="password"
           required
           placeholder="Password"
-          className="rounded-xl border border-white-8 bg-surface-tertiary px-4 py-3 text-sm text-white-90 placeholder:text-white-40 focus:border-white-24 focus:outline-none"
+          aria-label="Password"
+          className="border border-white-10 bg-ink px-4 py-3.5 text-[15px] text-paper placeholder:text-white-40 focus:border-rec focus:outline-none"
         />
 
-        <Button type="submit" variant="lime" className="mt-2 w-full">
+        <Button type="submit" variant="primary" size="lg" className="mt-2 w-full">
           {isSignup ? "Sign up" : "Log in"}
         </Button>
       </form>
 
-      <div className="mt-4 flex items-center gap-3 text-xs text-white-40">
+      <div className="slate mt-6 flex items-center gap-3 text-white-40">
         <div className="h-px flex-1 bg-white-8" />
         or
         <div className="h-px flex-1 bg-white-8" />
@@ -61,24 +65,25 @@ export function AuthForm({
 
       <Button
         variant="outline"
-        className="mt-4 w-full"
+        size="lg"
+        className="mt-6 w-full"
         onClick={() => router.push("/create")}
       >
         Continue with Google
       </Button>
 
-      <p className="mt-6 text-center text-sm text-white-60">
+      <p className="mt-8 text-sm text-white-60">
         {isSignup ? (
           <>
             Already have an account?{" "}
-            <Link href="/login" className="text-white-90 underline">
+            <Link href="/login" className="text-paper underline decoration-rec underline-offset-4">
               Log in
             </Link>
           </>
         ) : (
           <>
             Don&apos;t have an account?{" "}
-            <Link href="/signup" className="text-white-90 underline">
+            <Link href="/signup" className="text-paper underline decoration-rec underline-offset-4">
               Sign up
             </Link>
           </>

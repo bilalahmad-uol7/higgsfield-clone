@@ -16,6 +16,8 @@ export type GenerationParams = {
 
 export type JobStage = "queued" | "preparing" | "generating" | "upscaling" | "complete";
 
+export const JOB_STAGES: JobStage[] = ["queued", "preparing", "generating", "upscaling", "complete"];
+
 export type JobResult = {
   media: MediaRef;
 };

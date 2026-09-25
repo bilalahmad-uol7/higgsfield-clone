@@ -11,17 +11,34 @@ export default async function CreatePage({ searchParams }: PageProps<"/create">)
   const prompt = typeof params.prompt === "string" ? params.prompt : undefined;
 
   return (
-    <div className="mx-auto grid max-w-[1400px] gap-6 px-4 py-8 md:px-6 lg:grid-cols-[360px_1fr]">
-      <aside className="rounded-2xl border border-white-8 bg-surface-primary p-5 lg:sticky lg:top-20 lg:h-fit">
-        <ParamsSidebar initialType={type} initialModel={model} initialPreset={preset} initialPrompt={prompt} />
-      </aside>
-
-      <section>
-        <div className="mb-4 flex items-center justify-between">
-          <h1 className="hf-heading text-xl font-medium">Assets</h1>
+    <div className="mx-auto max-w-[1440px] px-4 pb-20 pt-10 md:px-8">
+      <div className="flex flex-col gap-3 border-b border-white-10 pb-6 md:flex-row md:items-end md:justify-between">
+        <div>
+          <p className="slate flex items-center gap-3 text-white-60">
+            <span className="text-rec">Stage A</span>
+            <span className="h-px w-8 bg-white-24" />
+            {type === "video" ? "Motion" : "Stills"}
+          </p>
+          <h1 className="display mt-4 text-5xl md:text-6xl">
+            The <em>studio.</em>
+          </h1>
         </div>
-        <JobFeed />
-      </section>
+        <p className="max-w-sm text-sm text-white-60 md:text-right">
+          Set the camera on the left, roll, and every take lands in your dailies. Nothing here leaves your browser.
+        </p>
+      </div>
+
+      <div className="mt-8 grid gap-8 lg:grid-cols-[380px_1fr]">
+        <aside className="min-w-0 border border-white-10 bg-ink-raised p-5 lg:sticky lg:top-20 lg:h-fit">
+          <p className="slate mb-6 border-b border-white-10 pb-4 text-white-40">Camera settings</p>
+          <ParamsSidebar initialType={type} initialModel={model} initialPreset={preset} initialPrompt={prompt} />
+        </aside>
+
+        <section aria-label="Dailies" className="min-w-0">
+          <p className="slate mb-4 text-white-40">Dailies</p>
+          <JobFeed />
+        </section>
+      </div>
     </div>
   );
 }

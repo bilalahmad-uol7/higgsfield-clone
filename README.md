@@ -1,16 +1,17 @@
-# Higgsfield Clone
+# Higgsfield — Noir Redesign
 
-An educational, unaffiliated visual clone of [higgsfield.ai](https://higgsfield.ai), built to demonstrate an AI-agent-driven development workflow. **This is not Higgsfield.** It has no backend, no real AI inference, and no account — every "generation" is a scripted client-side simulation. See [PROCESS.md](./PROCESS.md) for how it was built.
+An educational, unaffiliated redesign concept for [higgsfield.ai](https://higgsfield.ai), built to demonstrate an AI-agent-driven development workflow. **This is not Higgsfield.** It has no backend, no real AI inference, and no account — every "generation" is a scripted client-side simulation. See [PROCESS.md](./PROCESS.md) for how it was built.
 
 ## What this is
 
-- A high-fidelity static/interactive clone of the marketing site (landing, explore, pricing, auth) built in Next.js 16.
+- **v2 (current): an original "cinema noir" redesign.** Black & paper-white with one REC-red accent, editorial serif + mono type, and film motifs (grain, viewfinders, slates, timecodes). Footage stays grayscale until it's in focus, then blooms into color. The landing page has three Apple-style scroll set pieces: the hero pulls back into a framed monitor, a pinned film strip scrolls sideways, and a "how it works" demo types the prompt, lights camera moves and renders the shot as you scroll. Design spec: [docs/superpowers/specs/2026-09-25-noir-redesign-design.md](./docs/superpowers/specs/2026-09-25-noir-redesign-design.md).
+- **v1: the original high-fidelity clone** is preserved at git tag `v1-clone`.
 - A `/create` studio page that mimics a real async generation pipeline — queued → preparing → generating → upscaling → complete, with credits, cancellation, and batch results — that resolves to real (but pre-selected) Higgsfield demo media instead of calling any model.
-- Design tokens (colors, type, radii) and marketing copy taken directly from the live site; see [PROCESS.md](./PROCESS.md) for how they were sourced.
+- Studio names in the landing marquee are fictional on purpose, so the page implies no real endorsements.
 
 ## Stack
 
-Next.js 16 (App Router, Turbopack) · TypeScript · Tailwind v4 · zustand · framer-motion · lucide-react.
+Next.js 16 (App Router, Turbopack) · TypeScript · Tailwind v4 · zustand · framer-motion · Lenis · lucide-react.
 
 ## Getting started
 
