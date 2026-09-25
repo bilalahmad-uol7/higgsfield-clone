@@ -42,14 +42,21 @@ export function ExploreTabs({ initialTab }: { initialTab?: string }) {
 
   return (
     <div>
-      <div className="flex flex-wrap gap-2">
+      <div
+        role="tablist"
+        aria-label="Categories"
+        className="-mx-4 flex gap-px overflow-x-auto border-y border-white-10 bg-white-10 px-4 [scrollbar-width:none] md:mx-0 md:w-fit md:border md:px-0"
+        data-lenis-prevent
+      >
         {tabs.map((t) => (
           <button
             key={t}
+            role="tab"
+            aria-selected={tab === t}
             onClick={() => selectTab(t)}
             className={cn(
-              "rounded-pill px-4 py-2 text-sm font-medium transition-colors",
-              tab === t ? "bg-rec text-black" : "bg-white-6 text-white-70 hover:bg-white-10",
+              "slate shrink-0 px-4 py-3 transition-colors",
+              tab === t ? "bg-paper text-ink" : "bg-ink text-white-60 hover:bg-ink-raised hover:text-paper",
             )}
           >
             {t}
@@ -60,7 +67,7 @@ export function ExploreTabs({ initialTab }: { initialTab?: string }) {
       {tab === "Community" ? (
         <CommunityGrid />
       ) : (
-        <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="mt-8 grid grid-cols-2 gap-px border border-white-10 bg-white-10 sm:grid-cols-3 lg:grid-cols-4">
           {filtered.map((tool) => (
             <ToolCard key={tool.id} tool={tool} />
           ))}

@@ -1,17 +1,29 @@
 import { PricingGrid } from "@/components/pricing/PricingGrid";
+import { SectionHead } from "@/components/layout/SectionHead";
+import { Faq } from "@/components/layout/Faq";
 
 export default function PricingPage() {
   return (
-    <div className="mx-auto max-w-[1200px] px-4 py-14 md:px-6">
-      <div className="text-center">
-        <h1 className="hf-heading text-3xl font-medium sm:text-4xl">Pricing</h1>
-        <p className="mx-auto mt-2 max-w-lg text-sm text-white-60 sm:text-base">
-          Credits that work across every model — image, video, and audio.
-        </p>
+    <>
+      <div className="mx-auto max-w-[1440px] px-4 pb-10 pt-16 md:px-8 md:pt-24">
+        <SectionHead
+          level={1}
+          scene={1}
+          label="Rates"
+          title={
+            <>
+              Pay for the <em>shots,</em>
+              <br />
+              not the crew.
+            </>
+          }
+          aside="Credits work across every model — image, video and audio. Switch plans or top up whenever the shoot needs it."
+        />
+        <div className="mt-14">
+          <PricingGrid />
+        </div>
       </div>
-      <div className="mt-10">
-        <PricingGrid />
-      </div>
-    </div>
+      <Faq scene={2} />
+    </>
   );
 }

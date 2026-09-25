@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { PricingCards } from "@/components/pricing/PricingCards";
-import { SectionHead } from "@/components/home/SectionHead";
+import { SectionHead } from "@/components/layout/SectionHead";
 
 export function PricingSection() {
   return (

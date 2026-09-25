@@ -9,13 +9,17 @@ export function SectionHead({
   title,
   aside,
   className,
+  level = 2,
 }: {
   scene: number;
   label: string;
   title: React.ReactNode;
   aside?: React.ReactNode;
   className?: string;
+  /** 1 for a page's own title, 2 for sections within a page */
+  level?: 1 | 2;
 }) {
+  const Heading = level === 1 ? "h1" : "h2";
   return (
     <div className={cn("flex flex-col gap-6 md:flex-row md:items-end md:justify-between", className)}>
       <div>
@@ -27,7 +31,11 @@ export function SectionHead({
           </p>
         </Reveal>
         <Reveal delay={0.08}>
-          <h2 className="display mt-5 text-5xl sm:text-6xl lg:text-7xl">{title}</h2>
+          <Heading
+            className={cn("display mt-5", level === 1 ? "text-6xl sm:text-7xl lg:text-8xl" : "text-5xl sm:text-6xl lg:text-7xl")}
+          >
+            {title}
+          </Heading>
         </Reveal>
       </div>
       {aside && (

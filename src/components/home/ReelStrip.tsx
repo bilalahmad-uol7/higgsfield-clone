@@ -7,7 +7,7 @@ import { REEL, type ReelFrame } from "@/data/home";
 import { mediaUrl } from "@/lib/media";
 import { LazyVideo } from "@/components/ui/LazyVideo";
 import { useCinematic, usePinProgress, useScrub } from "@/components/motion/usePin";
-import { SectionHead } from "@/components/home/SectionHead";
+import { SectionHead } from "@/components/layout/SectionHead";
 import { cn } from "@/lib/cn";
 
 const FRAMES = REEL;

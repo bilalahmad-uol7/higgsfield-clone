@@ -2,7 +2,7 @@ import Link from "next/link";
 import { FEATURES } from "@/data/home";
 import { Media } from "@/components/ui/Media";
 import { Reveal } from "@/components/motion/Reveal";
-import { SectionHead } from "@/components/home/SectionHead";
+import { SectionHead } from "@/components/layout/SectionHead";
 import { cn } from "@/lib/cn";
 
 // Asymmetric 6-column bento: one hero tile, then a mosaic of smaller ones.

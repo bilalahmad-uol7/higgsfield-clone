@@ -4,7 +4,7 @@ import { ReelStrip } from "@/components/home/ReelStrip";
 import { HowItWorks } from "@/components/home/HowItWorks";
 import { FeatureBento } from "@/components/home/FeatureBento";
 import { PricingSection } from "@/components/home/PricingSection";
-import { Faq } from "@/components/home/Faq";
+import { Faq } from "@/components/layout/Faq";
 import { FinalCta } from "@/components/home/FinalCta";
 
 export default function Home() {

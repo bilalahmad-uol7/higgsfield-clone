@@ -50,7 +50,6 @@
   /* Type — editorial serif for display, grotesk body, mono for slates */
   --font-sans: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-instrument), ui-serif, Georgia, serif;
-  --font-grotesk: var(--font-serif);
   --font-mono: var(--font-jetbrains), ui-monospace, monospace;
 
   --text-display: 6.125rem;
@@ -141,16 +140,6 @@
 ::selection {
   background: var(--color-rec);
   color: var(--color-ink);
-}
-
-/* Legacy heading hook — now the editorial serif. Instrument Serif ships one
-   weight, so block the browser from faking bold when a font-medium sits
-   alongside it. */
-.hf-heading {
-  font-family: var(--font-serif);
-  font-weight: 400;
-  font-synthesis: none;
-  letter-spacing: -0.01em;
 }
 
 @utility display {

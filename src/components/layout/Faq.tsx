@@ -3,7 +3,7 @@
 import { useId, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { FAQ } from "@/data/faq";
-import { SectionHead } from "@/components/home/SectionHead";
+import { SectionHead } from "@/components/layout/SectionHead";
 import { cn } from "@/lib/cn";
 
 const EASE = [0.22, 1, 0.36, 1] as const;

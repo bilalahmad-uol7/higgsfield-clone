@@ -1,25 +1,35 @@
 import Link from "next/link";
 import type { Tool } from "@/data/tools";
 import { Media } from "@/components/ui/Media";
-import { Badge } from "@/components/ui/Badge";
 
 export function ToolCard({ tool }: { tool: Tool }) {
   return (
-    <Link
-      href={tool.href}
-      className="group flex flex-col gap-3 rounded-2xl border border-white-8 bg-surface-primary p-3 transition-colors hover:border-white-16"
-    >
-      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-surface-tertiary">
-        <Media media={tool.media} alt={tool.name} sizes="(min-width: 1024px) 24vw, 45vw" />
+    <Link href={tool.href} className="group flex flex-col bg-ink p-3 transition-colors hover:bg-ink-raised">
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-ink-raised">
+        <Media
+          media={tool.media}
+          alt={tool.name}
+          sizes="(min-width: 1024px) 24vw, 45vw"
+          className="noir-media transition-transform duration-700 group-hover:scale-105"
+        />
         {tool.badge && (
-          <Badge tone={tool.badge === "core" ? "neutral" : "rec"} className="absolute left-2 top-2">
+          <span
+            className={
+              tool.badge === "core"
+                ? "slate absolute left-2 top-2 bg-ink/80 px-1.5 py-1 text-paper"
+                : "slate absolute left-2 top-2 bg-rec px-1.5 py-1 text-ink"
+            }
+          >
             {tool.badge}
-          </Badge>
+          </span>
         )}
       </div>
-      <div>
-        <p className="text-sm font-medium text-white-90">{tool.name}</p>
-        <p className="mt-0.5 text-xs text-white-60">{tool.description}</p>
+      <div className="flex items-start justify-between gap-3 px-1 pb-1 pt-4">
+        <div>
+          <p className="display text-2xl leading-tight">{tool.name}</p>
+          <p className="mt-1 text-xs text-white-60">{tool.description}</p>
+        </div>
+        <span className="slate mt-1 text-rec opacity-0 transition-opacity group-hover:opacity-100">→</span>
       </div>
     </Link>
   );
