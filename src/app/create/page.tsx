@@ -1,6 +1,7 @@
 import { ParamsSidebar } from "@/components/create/ParamsSidebar";
 import { JobFeed } from "@/components/create/JobFeed";
 import type { GenerationType } from "@/lib/generation/types";
+import { requireUser } from "@/lib/auth/session";
 
 export default async function CreatePage({ searchParams }: PageProps<"/create">) {
   const params = await searchParams;
@@ -9,6 +10,11 @@ export default async function CreatePage({ searchParams }: PageProps<"/create">)
   const model = typeof params.model === "string" ? params.model : undefined;
   const preset = typeof params.preset === "string" ? params.preset : undefined;
   const prompt = typeof params.prompt === "string" ? params.prompt : undefined;
+
+  const query = new URLSearchParams(
+    Object.entries(params).flatMap(([k, v]) => (typeof v === "string" ? [[k, v]] : [])),
+  ).toString();
+  const profile = await requireUser(`/create${query ? `?${query}` : ""}`);
 
   return (
     <div className="mx-auto max-w-[1440px] px-4 pb-20 pt-10 md:px-8">
@@ -24,14 +30,20 @@ export default async function CreatePage({ searchParams }: PageProps<"/create">)
           </h1>
         </div>
         <p className="max-w-sm text-sm text-white-60 md:text-right">
-          Set the camera on the left, roll, and every take lands in your dailies. Nothing here leaves your browser.
+          Set the camera on the left and roll. Each take is charged to your account; cut a take early and the credits come back.
         </p>
       </div>
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[380px_1fr]">
         <aside className="min-w-0 border border-white-10 bg-ink-raised p-5 lg:sticky lg:top-20 lg:h-fit">
           <p className="slate mb-6 border-b border-white-10 pb-4 text-white-40">Camera settings</p>
-          <ParamsSidebar initialType={type} initialModel={model} initialPreset={preset} initialPrompt={prompt} />
+          <ParamsSidebar
+            initialType={type}
+            initialModel={model}
+            initialPreset={preset}
+            initialPrompt={prompt}
+            initialCredits={profile.credits}
+          />
         </aside>
 
         <section aria-label="Dailies" className="min-w-0">

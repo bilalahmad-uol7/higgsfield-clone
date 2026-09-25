@@ -6,9 +6,19 @@ import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/motion/Reveal";
 import { cn } from "@/lib/cn";
 
+export type BillingState = {
+  planId: string | null;
+  interval: string | null;
+  /** has an active/trialing/past-due subscription */
+  active: boolean;
+} | null;
+
 // Plan cards + billing toggle, shared by the landing page and /pricing.
-export function PricingCards() {
-  const [annual, setAnnual] = useState(true);
+// Each CTA posts to /api/checkout, which starts Stripe Checkout (or sends an
+// existing subscriber to the portal to switch plans).
+export function PricingCards({ billing = null }: { billing?: BillingState }) {
+  const [annual, setAnnual] = useState(billing?.interval !== "monthly");
+  const interval = annual ? "annual" : "monthly";
 
   return (
     <div>
@@ -72,9 +82,20 @@ export function PricingCards() {
                 ))}
               </ul>
 
-              <Button href="/signup" variant={plan.highlighted ? "primary" : "outline"} className="mt-8 w-full">
-                {plan.cta}
-              </Button>
+              {billing?.active && billing.planId === plan.id && billing.interval === interval ? (
+                <p className="slate mt-8 flex h-10 items-center justify-center border border-white-16 text-white-60">
+                  Current plan
+                </p>
+              ) : (
+                <form action="/api/checkout" method="post" className="mt-8">
+                  <input type="hidden" name="kind" value="plan" />
+                  <input type="hidden" name="planId" value={plan.id} />
+                  <input type="hidden" name="interval" value={interval} />
+                  <Button type="submit" variant={plan.highlighted ? "primary" : "outline"} className="w-full">
+                    {billing?.active ? "Switch plan" : plan.cta}
+                  </Button>
+                </form>
+              )}
             </Reveal>
           );
         })}

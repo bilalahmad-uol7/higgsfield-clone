@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ImagePlus } from "lucide-react";
 import { PromptBox } from "@/components/create/PromptBox";
 import { ModelPicker } from "@/components/create/ModelPicker";
@@ -9,7 +9,7 @@ import { BatchSizeStepper } from "@/components/create/BatchSizeStepper";
 import { GenerateButton } from "@/components/create/GenerateButton";
 import { Segmented } from "@/components/ui/Segmented";
 import { CREATE_MODELS, ASPECT_RATIOS, QUALITIES } from "@/data/create-models";
-import { useGenerationStore } from "@/lib/generation/store";
+import { useCredits, useGenerationStore } from "@/lib/generation/store";
 import { creditCost, type GenerationParams, type GenerationType } from "@/lib/generation/types";
 
 export function ParamsSidebar({
@@ -17,14 +17,25 @@ export function ParamsSidebar({
   initialModel,
   initialPreset,
   initialPrompt,
+  initialCredits,
 }: {
   initialType: GenerationType;
   initialModel?: string;
   initialPreset?: string;
   initialPrompt?: string;
+  /** Server-rendered balance from the user's profile. */
+  initialCredits: number;
 }) {
   const submitJob = useGenerationStore((s) => s.submitJob);
-  const credits = useGenerationStore((s) => s.credits);
+  const setCredits = useGenerationStore((s) => s.setCredits);
+  const credits = useCredits(initialCredits);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  // Seed the store with the server balance for this page view.
+  useEffect(() => {
+    setCredits(initialCredits);
+  }, [initialCredits, setCredits]);
 
   const [type, setType] = useState<GenerationType>(initialType);
   const [model, setModel] = useState(
@@ -46,9 +57,13 @@ export function ParamsSidebar({
   const params: GenerationParams = { type, model, preset, prompt, aspectRatio, quality, batchSize };
   const cost = creditCost(params);
 
-  function handleGenerate() {
-    if (!prompt.trim()) return;
-    submitJob(params);
+  async function handleGenerate() {
+    if (!prompt.trim() || submitting) return;
+    setSubmitting(true);
+    setSubmitError(null);
+    const result = await submitJob(params);
+    setSubmitting(false);
+    if (!result.ok) setSubmitError(result.error);
   }
 
   return (
@@ -79,7 +94,14 @@ export function ParamsSidebar({
       <Segmented label="Quality" options={QUALITIES} value={quality} onChange={setQuality} />
       <BatchSizeStepper value={batchSize} onChange={setBatchSize} />
 
-      <GenerateButton cost={cost} credits={credits} disabled={!prompt.trim()} onClick={handleGenerate} />
+      <GenerateButton
+        cost={cost}
+        credits={credits}
+        disabled={!prompt.trim()}
+        pending={submitting}
+        error={submitError}
+        onClick={handleGenerate}
+      />
     </div>
   );
 }

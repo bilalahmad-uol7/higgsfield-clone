@@ -5,7 +5,15 @@ import { Viewfinder } from "@/components/motion/Viewfinder";
 import { AuthForm } from "@/components/auth/AuthForm";
 
 // Split screen: a rolling shot on the left (the "set"), the form on the right.
-export function AuthScreen({ mode }: { mode: "login" | "signup" }) {
+export function AuthScreen({
+  mode,
+  next,
+  callbackError,
+}: {
+  mode: "login" | "signup";
+  next: string;
+  callbackError?: string;
+}) {
   const shot = mode === "signup" ? REEL[4] : REEL[1];
   return (
     <div className="grid min-h-[calc(100svh-3.5rem)] lg:grid-cols-2">
@@ -29,7 +37,7 @@ export function AuthScreen({ mode }: { mode: "login" | "signup" }) {
         </div>
       </div>
       <div className="flex items-center justify-center px-4 py-16 md:px-8">
-        <AuthForm mode={mode} />
+        <AuthForm mode={mode} next={next} callbackError={callbackError} />
       </div>
     </div>
   );

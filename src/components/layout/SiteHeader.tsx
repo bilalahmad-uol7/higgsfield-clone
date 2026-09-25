@@ -9,6 +9,7 @@ import { NAV, isGroup, type NavLeaf } from "@/data/nav";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { HiggsfieldLogo } from "@/components/ui/HiggsfieldLogo";
+import { AccountMenu, Avatar, SignOutButton, type Viewer } from "@/components/layout/AccountMenu";
 import { cn } from "@/lib/cn";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -42,7 +43,7 @@ function Dropdown({ label, items }: { label: string; items: NavLeaf[] }) {
   );
 }
 
-export function SiteHeader() {
+export function SiteHeader({ viewer }: { viewer: Viewer | null }) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -98,12 +99,18 @@ export function SiteHeader() {
           </nav>
 
           <div className="ml-auto flex items-center gap-2">
-            <Button href="/login" variant="ghost" size="sm" className="hidden sm:inline-flex">
-              Log in
-            </Button>
-            <Button href="/signup" variant="primary" size="sm">
-              Sign up
-            </Button>
+            {viewer ? (
+              <AccountMenu viewer={viewer} />
+            ) : (
+              <>
+                <Button href="/login" variant="ghost" size="sm" className="hidden sm:inline-flex">
+                  Log in
+                </Button>
+                <Button href="/signup" variant="primary" size="sm">
+                  Sign up
+                </Button>
+              </>
+            )}
             <button
               aria-label={menuOpen ? "Close menu" : "Open menu"}
               aria-expanded={menuOpen}
@@ -178,6 +185,32 @@ export function SiteHeader() {
                   )}
                 </motion.div>
               ))}
+
+              {viewer && (
+                <motion.div
+                  className="flex flex-col gap-4 border-t border-white-10 pt-8"
+                  initial={{ y: 24, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.6, ease: EASE, delay: 0.15 + NAV.length * 0.05 }}
+                >
+                  <div className="flex items-center gap-3">
+                    <Avatar viewer={viewer} className="h-10 w-10" />
+                    <div className="min-w-0">
+                      <p className="truncate text-paper">{viewer.name}</p>
+                      <p className="slate text-white-40">{viewer.credits.toLocaleString()} credits</p>
+                    </div>
+                  </div>
+                  <Link href="/account" onClick={() => setMenuOpen(false)} className="display text-4xl">
+                    Account
+                  </Link>
+                  {viewer.isAdmin && (
+                    <Link href="/admin" onClick={() => setMenuOpen(false)} className="display text-4xl text-rec">
+                      Admin
+                    </Link>
+                  )}
+                  <SignOutButton className="slate text-left text-white-60" />
+                </motion.div>
+              )}
             </div>
           </motion.div>
         )}
