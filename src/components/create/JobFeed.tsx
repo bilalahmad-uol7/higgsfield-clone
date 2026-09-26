@@ -1,16 +1,24 @@
 "use client";
 
-import { useGenerationStore, useHasHydrated } from "@/lib/generation/store";
+import { useEffect } from "react";
+import { useGenerationStore } from "@/lib/generation/store";
+import type { Job } from "@/lib/generation/types";
 import { JobCard } from "@/components/create/JobCard";
 import { Viewfinder } from "@/components/motion/Viewfinder";
 
-export function JobFeed() {
-  const jobs = useGenerationStore((s) => s.jobs);
-  // Wait for the persisted store to hydrate from localStorage before
-  // rendering so we don't flash an empty state ahead of real history.
-  const hydrated = useHasHydrated();
+export function JobFeed({ initialJobs }: { initialJobs: Job[] }) {
+  const storeJobs = useGenerationStore((s) => s.jobs);
+  const hydrated = useGenerationStore((s) => s.hydrated);
+  const hydrate = useGenerationStore((s) => s.hydrate);
 
-  if (!hydrated) return null;
+  // History is this user's server-side takes; load them into the store (and
+  // resume following any still rolling). Until then render the server list
+  // directly so there's no empty flash.
+  useEffect(() => {
+    hydrate(initialJobs);
+  }, [initialJobs, hydrate]);
+
+  const jobs = hydrated ? storeJobs : initialJobs;
 
   if (jobs.length === 0) {
     return (

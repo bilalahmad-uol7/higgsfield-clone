@@ -5,6 +5,9 @@ import { createClient } from "@/lib/supabase/server";
 import { ACTIVE_STATUSES, getPack, getPlan } from "@/lib/stripe/catalog";
 import { KIND_LABEL, REASON_LABEL, formatCredits, formatDate, formatMoney } from "@/lib/format";
 import { SectionHead } from "@/components/layout/SectionHead";
+import { Media } from "@/components/ui/Media";
+import { HISTORY_LIMIT, type JobResult } from "@/lib/generation/types";
+import { recentGenerations } from "@/lib/generation/server/settle";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/cn";
 
@@ -19,10 +22,22 @@ export default async function AccountPage({ searchParams }: PageProps<"/account"
   const { checkout, billing } = await searchParams;
   const supabase = await createClient();
 
-  // RLS limits both queries to this user's own rows.
-  const [{ data: purchases }, { data: ledger }] = await Promise.all([
-    supabase.from("transactions").select("*").order("created_at", { ascending: false }).limit(20),
-    supabase.from("credit_ledger").select("*").order("created_at", { ascending: false }).limit(15),
+  // Filter by owner explicitly: RLS alone would let an admin's account page
+  // list every user's rows.
+  const [{ data: purchases }, { data: ledger }, takes] = await Promise.all([
+    supabase
+      .from("transactions")
+      .select("*")
+      .eq("user_id", profile.id)
+      .order("created_at", { ascending: false })
+      .limit(20),
+    supabase
+      .from("credit_ledger")
+      .select("*")
+      .eq("user_id", profile.id)
+      .order("created_at", { ascending: false })
+      .limit(15),
+    recentGenerations(profile.id, HISTORY_LIMIT),
   ]);
 
   const plan = getPlan(profile.plan_id);
@@ -97,7 +112,51 @@ export default async function AccountPage({ searchParams }: PageProps<"/account"
         </div>
       </div>
 
-      <section className="mt-20" aria-labelledby="purchases">
+      <section className="mt-20" aria-labelledby="takes">
+        <div className="flex items-center justify-between">
+          <h2 id="takes" className="slate text-white-40">
+            Recent takes
+          </h2>
+          <Link href="/create" className="slate text-rec">
+            Studio →
+          </Link>
+        </div>
+        {takes.length ? (
+          <ul className="mt-4 grid grid-cols-2 gap-px border border-white-10 bg-white-10 sm:grid-cols-3 lg:grid-cols-5">
+            {takes.map((g) => {
+              const first = ((g.results ?? []) as JobResult[])[0];
+              return (
+                <li key={g.id} className="bg-ink">
+                  <div className="relative aspect-video overflow-hidden bg-ink-raised">
+                    {first ? (
+                      <Media media={first.media} alt={g.prompt} sizes="(min-width: 1024px) 20vw, 50vw" />
+                    ) : (
+                      <span className="slate absolute inset-0 flex items-center justify-center text-white-40">
+                        {g.status === "running" ? "Rolling…" : g.status}
+                      </span>
+                    )}
+                  </div>
+                  <p className="truncate px-3 pt-2 text-sm text-paper" title={g.prompt}>
+                    {g.prompt}
+                  </p>
+                  <p className="slate px-3 pb-3 pt-1 text-white-40">
+                    {g.type} · {formatDate(g.created_at)} · {g.cost} cr
+                  </p>
+                </li>
+              );
+            })}
+          </ul>
+        ) : (
+          <p className="mt-4 border border-white-10 px-4 py-6 text-sm text-white-60">
+            No takes yet.{" "}
+            <Link href="/create" className="text-paper underline decoration-rec underline-offset-4">
+              Roll your first one
+            </Link>
+          </p>
+        )}
+      </section>
+
+      <section className="mt-16" aria-labelledby="purchases">
         <h2 id="purchases" className="slate text-white-40">
           Purchases
         </h2>

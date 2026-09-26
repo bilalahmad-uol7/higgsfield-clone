@@ -16,6 +16,20 @@ const STAGE_LABEL: Record<Job["stage"], (job: Job) => string> = {
   complete: () => "Complete",
 };
 
+const PROVIDER_LABEL: Record<Job["provider"], string> = {
+  pollinations: "Rendered by Pollinations.ai",
+  "pollinations+fallback": "Pollinations.ai · some slots are samples",
+  mock: "Simulated video · sample clips",
+  "mock-fallback": "Samples · image service unavailable",
+};
+
+const STATUS_LABEL: Record<Job["status"], string> = {
+  running: "Rolling",
+  complete: "Wrapped",
+  cancelled: "Cut",
+  failed: "Failed",
+};
+
 function useElapsed(createdAt: number, running: boolean) {
   const [elapsed, setElapsed] = useState(() => Date.now() - createdAt);
   useEffect(() => {
@@ -32,6 +46,12 @@ export function JobCard({ job, take }: { job: Job; take: number }) {
   const running = job.status === "running";
   const elapsed = useElapsed(job.createdAt, running);
   const seconds = (elapsed / 1000).toFixed(1);
+
+  // Tiles take the shot's own aspect ratio, so stills aren't cropped;
+  // portrait takes are narrowed so a 9:16 frame doesn't fill the screen.
+  const [rw, rh] = job.params.aspectRatio.split(":").map(Number);
+  const tileRatio = { aspectRatio: `${rw} / ${rh}` };
+  const portrait = rw < rh;
 
   const label = job.params.preset
     ? job.params.preset.replace(/-/g, " ")
@@ -61,7 +81,9 @@ export function JobCard({ job, take }: { job: Job; take: number }) {
             </button>
           </div>
         ) : (
-          <span className="slate shrink-0 text-white-40">{job.status === "cancelled" ? "Cut" : "Wrapped"}</span>
+          <span className={cn("slate shrink-0", job.status === "failed" ? "text-rec" : "text-white-40")}>
+            {STATUS_LABEL[job.status]}
+          </span>
         )}
       </header>
 
@@ -82,24 +104,43 @@ export function JobCard({ job, take }: { job: Job; take: number }) {
         </div>
       )}
 
+      {job.status === "complete" && (
+        <p className="slate px-4 pt-2 text-white-40">
+          {PROVIDER_LABEL[job.provider]} · {job.cost} cr
+        </p>
+      )}
+
       {job.status === "cancelled" && (
-        <p className="slate px-4 pt-3 text-white-40">Cut before wrap — credits refunded.</p>
+        <p className="slate px-4 pt-3 text-white-40">Cut before wrap — {job.cost} credits refunded.</p>
+      )}
+
+      {job.status === "failed" && (
+        <p className="slate px-4 pt-3 text-rec">The take didn&apos;t make it — {job.cost} credits refunded.</p>
       )}
 
       {job.results.length > 0 ? (
-        <div className={cn("grid gap-1 p-4", job.params.batchSize > 1 ? "grid-cols-2" : "grid-cols-1")}>
+        <div
+          className={cn(
+            "grid gap-1 p-4",
+            job.params.batchSize > 1 ? "grid-cols-2" : "grid-cols-1",
+            portrait && (job.params.batchSize > 1 ? "max-w-2xl" : "max-w-sm"),
+          )}
+        >
           {job.results.slice(0, job.revealedCount).map((result, i) => (
-            <div key={i} className="relative aspect-video overflow-hidden bg-ink">
+            <div key={i} className="relative overflow-hidden bg-ink" style={tileRatio}>
               <div className="absolute inset-0 animate-develop">
-                <Media media={result.media} alt={`Take ${take}, result ${i + 1}`} sizes="(min-width: 1024px) 30vw, 90vw" />
+                <Media media={result.media} alt={`Take ${take}, result ${i + 1}`} sizes="(min-width: 1024px) 50vw, 90vw" />
               </div>
               <span className="slate absolute left-2 top-2 text-paper/80">
                 {String(take).padStart(2, "0")}.{i + 1}
               </span>
+              {result.fallback && (
+                <span className="slate absolute right-2 top-2 bg-ink/80 px-1.5 py-0.5 text-white-60">Sample</span>
+              )}
             </div>
           ))}
-          {Array.from({ length: job.params.batchSize - job.revealedCount }).map((_, i) => (
-            <div key={`pending-${i}`} className="relative flex aspect-video items-center justify-center bg-ink">
+          {Array.from({ length: Math.max(0, job.results.length - job.revealedCount) }).map((_, i) => (
+            <div key={`pending-${i}`} className="relative flex items-center justify-center bg-ink" style={tileRatio}>
               <span className="slate animate-pulse text-white-24">Developing…</span>
             </div>
           ))}

@@ -18,8 +18,19 @@ export type JobStage = "queued" | "preparing" | "generating" | "upscaling" | "co
 
 export const JOB_STAGES: JobStage[] = ["queued", "preparing", "generating", "upscaling", "complete"];
 
+export type JobStatus = "running" | "complete" | "failed" | "cancelled";
+
+/**
+ * Who produced a job's media: real Pollinations output, the scripted video
+ * mock, or demo samples substituted because Pollinations was unavailable
+ * (for some slots, or all of them).
+ */
+export type JobProvider = "pollinations" | "pollinations+fallback" | "mock" | "mock-fallback";
+
 export type JobResult = {
   media: MediaRef;
+  /** true when this slot is a demo sample standing in for a failed image call */
+  fallback?: boolean;
 };
 
 export type Job = {
@@ -29,11 +40,16 @@ export type Job = {
   stage: JobStage;
   progress: number;
   queuePosition: number;
-  status: "running" | "complete" | "cancelled";
+  status: JobStatus;
+  provider: JobProvider;
   cost: number;
   results: JobResult[];
   revealedCount: number;
+  error?: string;
 };
+
+/** Takes shown per user in the studio and on the account page. */
+export const HISTORY_LIMIT = 5;
 
 export function creditCost(params: Pick<GenerationParams, "type" | "quality" | "batchSize">) {
   const base = params.type === "video" ? 8 : 3;

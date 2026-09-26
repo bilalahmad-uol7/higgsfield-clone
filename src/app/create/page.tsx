@@ -1,6 +1,8 @@
 import { ParamsSidebar } from "@/components/create/ParamsSidebar";
 import { JobFeed } from "@/components/create/JobFeed";
-import type { GenerationType } from "@/lib/generation/types";
+import { HISTORY_LIMIT, type GenerationType } from "@/lib/generation/types";
+import { rowToJob } from "@/lib/generation/lifecycle";
+import { recentGenerations } from "@/lib/generation/server/settle";
 import { requireUser } from "@/lib/auth/session";
 
 export default async function CreatePage({ searchParams }: PageProps<"/create">) {
@@ -15,6 +17,8 @@ export default async function CreatePage({ searchParams }: PageProps<"/create">)
     Object.entries(params).flatMap(([k, v]) => (typeof v === "string" ? [[k, v]] : [])),
   ).toString();
   const profile = await requireUser(`/create${query ? `?${query}` : ""}`);
+  // Only this user's own latest takes — history lives server-side, per account.
+  const history = (await recentGenerations(profile.id, HISTORY_LIMIT)).map(rowToJob);
 
   return (
     <div className="mx-auto max-w-[1440px] px-4 pb-20 pt-10 md:px-8">
@@ -30,7 +34,8 @@ export default async function CreatePage({ searchParams }: PageProps<"/create">)
           </h1>
         </div>
         <p className="max-w-sm text-sm text-white-60 md:text-right">
-          Set the camera on the left and roll. Each take is charged to your account; cut a take early and the credits come back.
+          Set the camera on the left and roll. Each take is charged to your account; cut a take early, or if it
+          fails, and the credits come back. Your last {HISTORY_LIMIT} takes are kept here.
         </p>
       </div>
 
@@ -48,7 +53,7 @@ export default async function CreatePage({ searchParams }: PageProps<"/create">)
 
         <section aria-label="Dailies" className="min-w-0">
           <p className="slate mb-4 text-white-40">Dailies</p>
-          <JobFeed />
+          <JobFeed initialJobs={history} />
         </section>
       </div>
     </div>

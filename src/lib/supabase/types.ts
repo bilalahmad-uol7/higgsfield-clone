@@ -5,3 +5,4 @@ import type { Database } from "@/lib/supabase/database.types";
 export type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 export type Transaction = Database["public"]["Tables"]["transactions"]["Row"];
 export type LedgerEntry = Database["public"]["Tables"]["credit_ledger"]["Row"];
+export type GenerationRow = Database["public"]["Tables"]["generations"]["Row"];

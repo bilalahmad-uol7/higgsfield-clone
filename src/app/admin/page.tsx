@@ -15,7 +15,7 @@ export default async function AdminOverview() {
   const db = createAdminClient();
   const since = isoDaysAgo(30);
 
-  const [users, subscribers, revenue, recentTx, latestUsers, latestTx] = await Promise.all([
+  const [users, subscribers, revenue, recentTx, latestUsers, latestTx, recentGenerations] = await Promise.all([
     db.from("profiles").select("id", { count: "exact", head: true }),
     db
       .from("profiles")
@@ -25,15 +25,17 @@ export default async function AdminOverview() {
     db.from("transactions").select("id", { count: "exact", head: true }).gte("created_at", since),
     db.from("profiles").select("id, email, full_name, provider, created_at").order("created_at", { ascending: false }).limit(5),
     db.from("transactions").select("*").order("created_at", { ascending: false }).limit(5),
+    db.from("generations").select("id", { count: "exact", head: true }).gte("created_at", isoDaysAgo(1)),
   ]);
 
   return (
     <div className="flex flex-col gap-14">
-      <div className="grid gap-px border border-white-10 bg-white-10 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-px border border-white-10 bg-white-10 sm:grid-cols-2 lg:grid-cols-5">
         <Kpi label="Registered users" value={(users.count ?? 0).toLocaleString()} />
         <Kpi label="Active subscribers" value={(subscribers.count ?? 0).toLocaleString()} />
         <Kpi label="Revenue (all time)" value={sumByCurrency(revenue.data ?? [])} hint="Recorded from Stripe webhooks" />
         <Kpi label="Payments · 30 days" value={(recentTx.count ?? 0).toLocaleString()} />
+        <Kpi label="Generations · 24h" value={(recentGenerations.count ?? 0).toLocaleString()} />
       </div>
 
       <div className="grid gap-10 lg:grid-cols-2">
