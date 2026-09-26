@@ -11,7 +11,8 @@ const HOLD_AT = 92;
 
 const tracking = new Set<string>();
 
-type ServerView = { job: Job; credits: number };
+/** `credits` is only sent once the job has settled. */
+type ServerView = { job: Job; credits?: number };
 
 function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -71,7 +72,7 @@ async function follow(id: string) {
   }
 
   const { job, credits } = final;
-  getState().setCredits(credits);
+  if (credits !== undefined) getState().setCredits(credits);
 
   if (job.status !== "complete") {
     getState().patchJob(id, { status: job.status, error: job.error, results: [], revealedCount: 0 });

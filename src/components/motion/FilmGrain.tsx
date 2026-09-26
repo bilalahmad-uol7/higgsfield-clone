@@ -7,8 +7,11 @@ const NOISE = `url("data:image/svg+xml;utf8,${encodeURIComponent(
 
 export function FilmGrain() {
   return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 z-[70] overflow-hidden opacity-[0.07] mix-blend-overlay">
-      <div className="absolute -inset-[10%] animate-grain" style={{ backgroundImage: NOISE }} />
+    // No mix-blend-mode: blending a full-viewport animated layer forces the
+    // compositor to re-blend everything beneath it (videos included) on
+    // every step. A plain translucent layer on its own GPU layer is ~free.
+    <div aria-hidden className="pointer-events-none fixed inset-0 z-[70] overflow-hidden opacity-[0.045] [contain:strict]">
+      <div className="absolute -inset-[10%] animate-grain will-change-transform" style={{ backgroundImage: NOISE }} />
     </div>
   );
 }

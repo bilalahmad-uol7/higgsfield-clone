@@ -43,7 +43,11 @@ function Dropdown({ label, items }: { label: string; items: NavLeaf[] }) {
   );
 }
 
-export function SiteHeader({ viewer }: { viewer: Viewer | null }) {
+/**
+ * `viewer` is undefined while the session is still streaming in (the layout
+ * never blocks the page on it), null when signed out.
+ */
+export function SiteHeader({ viewer }: { viewer: Viewer | null | undefined }) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -99,7 +103,9 @@ export function SiteHeader({ viewer }: { viewer: Viewer | null }) {
           </nav>
 
           <div className="ml-auto flex items-center gap-2">
-            {viewer ? (
+            {viewer === undefined ? (
+              <span aria-hidden className="block h-9 w-24 animate-pulse bg-white-6" />
+            ) : viewer ? (
               <AccountMenu viewer={viewer} />
             ) : (
               <>

@@ -7,6 +7,7 @@ import { isValidJobId, parseGenerationParams } from "@/lib/generation/validate";
 import { dueAt, initialProvider } from "@/lib/generation/lifecycle";
 import { runImageJob } from "@/lib/generation/server/run-image-job";
 import { jsonError } from "@/lib/api";
+import { authUserId } from "@/lib/auth/session";
 
 // Image jobs keep running (via `after`) once the response is sent.
 export const maxDuration = 300;
@@ -15,10 +16,8 @@ export const maxDuration = 300;
 // validated params; anything the client claims about cost is ignored.
 export async function POST(request: Request) {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return jsonError("unauthorized", 401);
+  const userId = await authUserId(supabase);
+  if (!userId) return jsonError("unauthorized", 401);
 
   const body = (await request.json().catch(() => null)) as { jobId?: unknown; params?: unknown } | null;
   const params = parseGenerationParams(body?.params);
@@ -27,7 +26,7 @@ export async function POST(request: Request) {
   const due = dueAt(params, jobId, Date.now());
 
   const { data, error } = await createAdminClient().rpc("start_generation", {
-    p_user: user.id,
+    p_user: userId,
     p_id: jobId,
     p_type: params.type,
     p_model: params.model,
@@ -48,7 +47,7 @@ export async function POST(request: Request) {
 
   // Video is a scripted mock: it completes on a later poll once `due` passes.
   if (params.type === "image") {
-    after(() => runImageJob({ userId: user.id, jobId, params, deadline: due.getTime() }));
+    after(() => runImageJob({ userId, jobId, params, deadline: due.getTime() }));
   }
 
   return NextResponse.json({ credits: data });

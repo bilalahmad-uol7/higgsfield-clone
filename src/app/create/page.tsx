@@ -3,7 +3,7 @@ import { JobFeed } from "@/components/create/JobFeed";
 import { HISTORY_LIMIT, type GenerationType } from "@/lib/generation/types";
 import { rowToJob } from "@/lib/generation/lifecycle";
 import { recentGenerations } from "@/lib/generation/server/settle";
-import { requireUser } from "@/lib/auth/session";
+import { getAuthUserId, requireUser } from "@/lib/auth/session";
 
 export default async function CreatePage({ searchParams }: PageProps<"/create">) {
   const params = await searchParams;
@@ -16,9 +16,13 @@ export default async function CreatePage({ searchParams }: PageProps<"/create">)
   const query = new URLSearchParams(
     Object.entries(params).flatMap(([k, v]) => (typeof v === "string" ? [[k, v]] : [])),
   ).toString();
-  const profile = await requireUser(`/create${query ? `?${query}` : ""}`);
-  // Only this user's own latest takes — history lives server-side, per account.
-  const history = (await recentGenerations(profile.id, HISTORY_LIMIT)).map(rowToJob);
+  // Profile and history load in parallel; both only need the (locally
+  // verified) user id. History is this user's own latest takes, per account.
+  const [profile, rows] = await Promise.all([
+    requireUser(`/create${query ? `?${query}` : ""}`),
+    getAuthUserId().then((id) => (id ? recentGenerations(id, HISTORY_LIMIT) : [])),
+  ]);
+  const history = rows.map(rowToJob);
 
   return (
     <div className="mx-auto max-w-[1440px] px-4 pb-20 pt-10 md:px-8">

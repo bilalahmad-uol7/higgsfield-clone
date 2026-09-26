@@ -28,8 +28,17 @@ function useAmbientCanvas(source: React.RefObject<HTMLElement | null>) {
       const video = source.current?.querySelector("video");
       if (video && video.readyState >= 2) ctx.drawImage(video, 0, 0, ctx.canvas.width, ctx.canvas.height);
     };
-    raf = requestAnimationFrame(draw);
-    return () => cancelAnimationFrame(raf);
+    // Only mirror while the hero is on screen; once scrolled past, stop.
+    const target = source.current ?? ctx.canvas;
+    const observer = new IntersectionObserver(([entry]) => {
+      cancelAnimationFrame(raf);
+      if (entry.isIntersecting) raf = requestAnimationFrame(draw);
+    });
+    observer.observe(target);
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(raf);
+    };
   }, [source]);
   return canvas;
 }

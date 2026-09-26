@@ -10,7 +10,7 @@ import "lenis/dist/lenis.css";
 export function SmoothScroll({ children }: { children: React.ReactNode }) {
   return (
     <MotionConfig reducedMotion="user">
-      <ReactLenis root options={{ lerp: 0.1, smoothWheel: true, anchors: true }}>
+      <ReactLenis root options={{ lerp: 0.15, smoothWheel: true, anchors: true }}>
         {children}
       </ReactLenis>
     </MotionConfig>

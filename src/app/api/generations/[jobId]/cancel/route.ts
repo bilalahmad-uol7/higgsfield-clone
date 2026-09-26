@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isValidJobId } from "@/lib/generation/validate";
 import { jsonError } from "@/lib/api";
+import { authUserId } from "@/lib/auth/session";
 
 // Cancel a take that is still rolling and refund it. A finished (or failed,
 // or already cancelled) job is refused, so output can't be kept for free.
@@ -11,12 +12,10 @@ export async function POST(_request: Request, ctx: RouteContext<"/api/generation
   if (!isValidJobId(jobId)) return jsonError("invalid_params", 400);
 
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return jsonError("unauthorized", 401);
+  const userId = await authUserId(supabase);
+  if (!userId) return jsonError("unauthorized", 401);
 
-  const { data, error } = await createAdminClient().rpc("cancel_generation", { p_user: user.id, p_id: jobId });
+  const { data, error } = await createAdminClient().rpc("cancel_generation", { p_user: userId, p_id: jobId });
   if (error) {
     if (error.message.includes("not_cancellable")) return jsonError("not_cancellable", 409);
     if (error.message.includes("unknown_job")) return jsonError("unknown_job", 404);
