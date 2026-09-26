@@ -4,6 +4,7 @@ import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
 import { FilmGrain } from "@/components/motion/FilmGrain";
+import { getSessionProfile } from "@/lib/auth/session";
 import "./globals.css";
 
 const interTight = Inter_Tight({
@@ -43,7 +44,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const profile = await getSessionProfile();
+  const viewer = profile
+    ? {
+        name: profile.full_name || profile.email.split("@")[0],
+        email: profile.email,
+        avatarUrl: profile.avatar_url,
+        credits: profile.credits,
+        isAdmin: profile.role === "admin",
+      }
+    : null;
+
   return (
     <html
       lang="en"
@@ -51,7 +63,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="flex min-h-full flex-col">
         <SmoothScroll>
-          <SiteHeader />
+          <SiteHeader viewer={viewer} />
           <main className="flex-1">{children}</main>
           <SiteFooter />
         </SmoothScroll>

@@ -1,8 +1,11 @@
 import Link from "next/link";
 import { PricingCards } from "@/components/pricing/PricingCards";
+import { getSessionProfile } from "@/lib/auth/session";
+import { billingStateOf } from "@/lib/stripe/billing-state";
 import { SectionHead } from "@/components/layout/SectionHead";
 
-export function PricingSection() {
+export async function PricingSection() {
+  const billing = billingStateOf(await getSessionProfile());
   return (
     <section className="mx-auto max-w-[1440px] px-4 py-28 md:px-8 md:py-40">
       <SectionHead
@@ -23,7 +26,7 @@ export function PricingSection() {
         }
       />
       <div className="mt-14">
-        <PricingCards />
+        <PricingCards billing={billing} />
       </div>
     </section>
   );

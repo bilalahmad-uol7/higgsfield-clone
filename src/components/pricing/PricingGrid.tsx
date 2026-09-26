@@ -1,13 +1,13 @@
 import { ENTERPRISE, CREDIT_PACKS } from "@/data/pricing";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/motion/Reveal";
-import { PricingCards } from "@/components/pricing/PricingCards";
+import { PricingCards, type BillingState } from "@/components/pricing/PricingCards";
 
 // Full rate card for /pricing: plans, then top-ups, then the enterprise band.
-export function PricingGrid() {
+export function PricingGrid({ billing = null }: { billing?: BillingState }) {
   return (
     <div>
-      <PricingCards />
+      <PricingCards billing={billing} />
 
       <div className="mt-20">
         <p className="slate text-white-40">Top-ups</p>
@@ -16,9 +16,18 @@ export function PricingGrid() {
             <Reveal key={pack.id} delay={i * 0.06} className="flex flex-col gap-4 bg-ink p-6">
               <div className="flex items-baseline justify-between gap-4">
                 <span className="display text-3xl">{pack.label}</span>
-                {"price" in pack && <span className="display text-3xl text-white-60">${pack.price}</span>}
+                {pack.price != null && <span className="display text-3xl text-white-60">${pack.price}</span>}
               </div>
               <p className="text-sm text-white-60">{pack.detail}</p>
+              {pack.price != null && pack.credits != null && (
+                <form action="/api/checkout" method="post" className="mt-auto">
+                  <input type="hidden" name="kind" value="pack" />
+                  <input type="hidden" name="packId" value={pack.id} />
+                  <Button type="submit" variant="outline" size="sm" className="w-full">
+                    Buy {pack.credits.toLocaleString()} credits
+                  </Button>
+                </form>
+              )}
             </Reveal>
           ))}
         </div>

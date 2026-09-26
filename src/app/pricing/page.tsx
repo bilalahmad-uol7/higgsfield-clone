@@ -1,8 +1,20 @@
 import { PricingGrid } from "@/components/pricing/PricingGrid";
 import { SectionHead } from "@/components/layout/SectionHead";
 import { Faq } from "@/components/layout/Faq";
+import { getSessionProfile } from "@/lib/auth/session";
+import { billingStateOf } from "@/lib/stripe/billing-state";
 
-export default function PricingPage() {
+const NOTICES: Record<string, string> = {
+  cancelled: "Checkout cancelled — nothing was charged.",
+  invalid: "That plan or pack isn't available. Pick one below.",
+  error: "We couldn't reach the payment provider. Try again in a moment.",
+};
+
+export default async function PricingPage({ searchParams }: PageProps<"/pricing">) {
+  const { checkout } = await searchParams;
+  const notice = typeof checkout === "string" ? NOTICES[checkout] : undefined;
+  const billing = billingStateOf(await getSessionProfile());
+
   return (
     <>
       <div className="mx-auto max-w-[1440px] px-4 pb-10 pt-16 md:px-8 md:pt-24">
@@ -19,8 +31,13 @@ export default function PricingPage() {
           }
           aside="Credits work across every model — image, video and audio. Switch plans or top up whenever the shoot needs it."
         />
+        {notice && (
+          <p role="status" className="slate mt-10 border border-white-16 px-4 py-3 text-white-70">
+            {notice}
+          </p>
+        )}
         <div className="mt-14">
-          <PricingGrid />
+          <PricingGrid billing={billing} />
         </div>
       </div>
       <Faq scene={2} />

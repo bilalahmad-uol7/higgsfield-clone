@@ -65,8 +65,12 @@ export const ENTERPRISE = {
   cta: "Contact sales",
 };
 
-export const CREDIT_PACKS = [
+export type CreditPack = { id: string; label: string; detail: string; price?: number; credits?: number };
+
+// Packs with a price and credits are purchasable one-time top-ups; Auto-Refill
+// is informational only.
+export const CREDIT_PACKS: CreditPack[] = [
   { id: "autorefill", label: "Auto-Refill", detail: "$1 = 20 credits, applied automatically when you run out" },
-  { id: "pack-600", label: "600 credits", price: 30, detail: "One-time top-up, expires in 90 days" },
-  { id: "pack-1000", label: "1,000 credits", price: 50, detail: "One-time top-up, expires in 90 days" },
+  { id: "pack-600", label: "600 credits", price: 30, credits: 600, detail: "One-time top-up, expires in 90 days" },
+  { id: "pack-1000", label: "1,000 credits", price: 50, credits: 1000, detail: "One-time top-up, expires in 90 days" },
 ];
