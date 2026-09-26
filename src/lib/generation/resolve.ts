@@ -6,7 +6,7 @@ import type { GenerationParams } from "@/lib/generation/types";
 // Deterministic djb2 hash so the same prompt+index always resolves to the
 // same demo clip (stable across re-renders/refresh) while different prompts
 // visibly return different results.
-function hash(input: string) {
+export function hash(input: string) {
   let h = 5381;
   for (let i = 0; i < input.length; i++) {
     h = (h * 33) ^ input.charCodeAt(i);

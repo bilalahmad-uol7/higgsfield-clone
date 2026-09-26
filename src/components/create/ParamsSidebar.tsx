@@ -68,7 +68,14 @@ export function ParamsSidebar({
 
   return (
     <div className="flex flex-col gap-6">
-      <Segmented label="Type" options={["image", "video"] as const} value={type} onChange={handleTypeChange} />
+      <div>
+        <Segmented label="Type" options={["image", "video"] as const} value={type} onChange={handleTypeChange} />
+        <p className="mt-2 text-xs text-white-40">
+          {type === "image"
+            ? "Stills render for real via Pollinations.ai (free, open models)."
+            : "Video is a preview simulation — it returns sample clips; credits are still charged."}
+        </p>
+      </div>
 
       <PromptBox value={prompt} onChange={setPrompt} />
 

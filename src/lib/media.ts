@@ -7,15 +7,18 @@ const CDN = "https://cdn.higgsfield.ai";
 const STATIC = "https://static.higgsfield.ai";
 
 export type MediaRef = {
+  /** absolute URL of media we host ourselves (generated images in Supabase Storage) */
+  url?: string;
   /** path relative to cdn.higgsfield.ai, e.g. "card/<uuid>.mp4" */
   cdn?: string;
   /** path relative to static.higgsfield.ai */
   staticCdn?: string;
   /** filename under /public/demo/ used when SOURCE === "local" */
-  local: string;
+  local?: string;
 };
 
 export function mediaUrl(ref: MediaRef): string {
+  if (ref.url) return ref.url;
   if (SOURCE === "local") return `/demo/${ref.local}`;
   if (ref.cdn) return `${CDN}/${ref.cdn}`;
   if (ref.staticCdn) return `${STATIC}/${ref.staticCdn}`;

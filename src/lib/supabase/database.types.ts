@@ -24,6 +24,25 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"generations": {
+                  Row: {
+                    "completed_at": string | null,"cost": number,"created_at": string,"error": string | null,"id": string,"model": string,"params": Json,"prompt": string,"provider": string,"due_at": string,"results": Json,"status": string,"type": string,"user_id": string
+                  }
+                  Insert: {
+                    "completed_at"?: string | null,"cost": number,"created_at"?: string,"error"?: string | null,"id": string,"model": string,"params": Json,"prompt": string,"provider": string,"due_at": string,"results"?: Json,"status"?: string,"type": string,"user_id": string
+                  }
+                  Update: {
+                    "completed_at"?: string | null,"cost"?: number,"created_at"?: string,"error"?: string | null,"id"?: string,"model"?: string,"params"?: Json,"prompt"?: string,"provider"?: string,"due_at"?: string,"results"?: Json,"status"?: string,"type"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "generations_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"profiles": {
                   Row: {
                     "avatar_url": string | null,"created_at": string,"credits": number,"current_period_end": string | null,"email": string,"full_name": string | null,"id": string,"plan_id": string | null,"plan_interval": string | null,"provider": string,"role": string,"stripe_customer_id": string | null,"stripe_subscription_id": string | null,"subscription_status": string | null,"updated_at": string
@@ -62,7 +81,19 @@ isOneToOne: false
             [_ in never]: never
           }
           Functions: {
-            "grant_credits":
+            "cancel_generation":
+{ Args: { "p_id": string,"p_user": string }; Returns: number
+                           },
+"fail_generation":
+{ Args: { "p_error": string,"p_id": string }; Returns: number
+                           },
+"finish_generation":
+{ Args: { "p_id": string,"p_provider"?: string,"p_results": Json }; Returns: boolean
+                           },
+"start_generation":
+{ Args: { "p_cost": number,"p_id": string,"p_model": string,"p_params": Json,"p_prompt": string,"p_provider": string,"p_due_at": string,"p_type": string,"p_user": string }; Returns: number
+                           },
+"grant_credits":
 { Args: { "p_amount": number,"p_reason": string,"p_ref": string,"p_user": string }; Returns: number
                            },
 "is_admin":
