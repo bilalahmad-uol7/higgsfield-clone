@@ -22,10 +22,21 @@ export default async function AccountPage({ searchParams }: PageProps<"/account"
   const { checkout, billing } = await searchParams;
   const supabase = await createClient();
 
-  // RLS limits both queries to this user's own rows.
+  // Filter by owner explicitly: RLS alone would let an admin's account page
+  // list every user's rows.
   const [{ data: purchases }, { data: ledger }, takes] = await Promise.all([
-    supabase.from("transactions").select("*").order("created_at", { ascending: false }).limit(20),
-    supabase.from("credit_ledger").select("*").order("created_at", { ascending: false }).limit(15),
+    supabase
+      .from("transactions")
+      .select("*")
+      .eq("user_id", profile.id)
+      .order("created_at", { ascending: false })
+      .limit(20),
+    supabase
+      .from("credit_ledger")
+      .select("*")
+      .eq("user_id", profile.id)
+      .order("created_at", { ascending: false })
+      .limit(15),
     recentGenerations(profile.id, HISTORY_LIMIT),
   ]);
 

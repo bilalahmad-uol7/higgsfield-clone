@@ -26,13 +26,13 @@ isOneToOne: false
                   ]
                 },"generations": {
                   Row: {
-                    "completed_at": string | null,"cost": number,"created_at": string,"error": string | null,"id": string,"model": string,"params": Json,"prompt": string,"provider": string,"due_at": string,"results": Json,"status": string,"type": string,"user_id": string
+                    "completed_at": string | null,"cost": number,"created_at": string,"due_at": string,"error": string | null,"id": string,"model": string,"params": NonNullable<Json>,"prompt": string,"provider": string,"results": NonNullable<Json>,"status": string,"type": string,"user_id": string
                   }
                   Insert: {
-                    "completed_at"?: string | null,"cost": number,"created_at"?: string,"error"?: string | null,"id": string,"model": string,"params": Json,"prompt": string,"provider": string,"due_at": string,"results"?: Json,"status"?: string,"type": string,"user_id": string
+                    "completed_at"?: string | null,"cost": number,"created_at"?: string,"due_at": string,"error"?: string | null,"id": string,"model": string,"params": NonNullable<Json>,"prompt": string,"provider": string,"results"?: NonNullable<Json>,"status"?: string,"type": string,"user_id": string
                   }
                   Update: {
-                    "completed_at"?: string | null,"cost"?: number,"created_at"?: string,"error"?: string | null,"id"?: string,"model"?: string,"params"?: Json,"prompt"?: string,"provider"?: string,"due_at"?: string,"results"?: Json,"status"?: string,"type"?: string,"user_id"?: string
+                    "completed_at"?: string | null,"cost"?: number,"created_at"?: string,"due_at"?: string,"error"?: string | null,"id"?: string,"model"?: string,"params"?: NonNullable<Json>,"prompt"?: string,"provider"?: string,"results"?: NonNullable<Json>,"status"?: string,"type"?: string,"user_id"?: string
                   }
                   Relationships: [
                     {
@@ -90,9 +90,6 @@ isOneToOne: false
 "finish_generation":
 { Args: { "p_id": string,"p_provider"?: string,"p_results": Json }; Returns: boolean
                            },
-"start_generation":
-{ Args: { "p_cost": number,"p_id": string,"p_model": string,"p_params": Json,"p_prompt": string,"p_provider": string,"p_due_at": string,"p_type": string,"p_user": string }; Returns: number
-                           },
 "grant_credits":
 { Args: { "p_amount": number,"p_reason": string,"p_ref": string,"p_user": string }; Returns: number
                            },
@@ -104,6 +101,9 @@ isOneToOne: false
                            },
 "spend_credits":
 { Args: { "p_amount": number,"p_ref": string,"p_user": string }; Returns: number
+                           },
+"start_generation":
+{ Args: { "p_cost": number,"p_due_at": string,"p_id": string,"p_model": string,"p_params": Json,"p_prompt": string,"p_provider": string,"p_type": string,"p_user": string }; Returns: number
                            }
           }
           Enums: {

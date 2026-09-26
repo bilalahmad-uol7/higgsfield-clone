@@ -47,6 +47,12 @@ export function JobCard({ job, take }: { job: Job; take: number }) {
   const elapsed = useElapsed(job.createdAt, running);
   const seconds = (elapsed / 1000).toFixed(1);
 
+  // Tiles take the shot's own aspect ratio, so stills aren't cropped;
+  // portrait takes are narrowed so a 9:16 frame doesn't fill the screen.
+  const [rw, rh] = job.params.aspectRatio.split(":").map(Number);
+  const tileRatio = { aspectRatio: `${rw} / ${rh}` };
+  const portrait = rw < rh;
+
   const label = job.params.preset
     ? job.params.preset.replace(/-/g, " ")
     : job.params.model.replace(/-/g, " ");
@@ -113,11 +119,17 @@ export function JobCard({ job, take }: { job: Job; take: number }) {
       )}
 
       {job.results.length > 0 ? (
-        <div className={cn("grid gap-1 p-4", job.params.batchSize > 1 ? "grid-cols-2" : "grid-cols-1")}>
+        <div
+          className={cn(
+            "grid gap-1 p-4",
+            job.params.batchSize > 1 ? "grid-cols-2" : "grid-cols-1",
+            portrait && (job.params.batchSize > 1 ? "max-w-2xl" : "max-w-sm"),
+          )}
+        >
           {job.results.slice(0, job.revealedCount).map((result, i) => (
-            <div key={i} className="relative aspect-video overflow-hidden bg-ink">
+            <div key={i} className="relative overflow-hidden bg-ink" style={tileRatio}>
               <div className="absolute inset-0 animate-develop">
-                <Media media={result.media} alt={`Take ${take}, result ${i + 1}`} sizes="(min-width: 1024px) 30vw, 90vw" />
+                <Media media={result.media} alt={`Take ${take}, result ${i + 1}`} sizes="(min-width: 1024px) 50vw, 90vw" />
               </div>
               <span className="slate absolute left-2 top-2 text-paper/80">
                 {String(take).padStart(2, "0")}.{i + 1}
@@ -128,7 +140,7 @@ export function JobCard({ job, take }: { job: Job; take: number }) {
             </div>
           ))}
           {Array.from({ length: Math.max(0, job.results.length - job.revealedCount) }).map((_, i) => (
-            <div key={`pending-${i}`} className="relative flex aspect-video items-center justify-center bg-ink">
+            <div key={`pending-${i}`} className="relative flex items-center justify-center bg-ink" style={tileRatio}>
               <span className="slate animate-pulse text-white-24">Developing…</span>
             </div>
           ))}
