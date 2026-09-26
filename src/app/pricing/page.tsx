@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { PricingGrid } from "@/components/pricing/PricingGrid";
 import { SectionHead } from "@/components/layout/SectionHead";
 import { Faq } from "@/components/layout/Faq";
@@ -10,10 +11,14 @@ const NOTICES: Record<string, string> = {
   error: "We couldn't reach the payment provider. Try again in a moment.",
 };
 
+// Streams plan state in (see PricingSection); fallback is the signed-out grid.
+async function GridWithBilling() {
+  return <PricingGrid billing={billingStateOf(await getSessionProfile())} />;
+}
+
 export default async function PricingPage({ searchParams }: PageProps<"/pricing">) {
   const { checkout } = await searchParams;
   const notice = typeof checkout === "string" ? NOTICES[checkout] : undefined;
-  const billing = billingStateOf(await getSessionProfile());
 
   return (
     <>
@@ -37,7 +42,9 @@ export default async function PricingPage({ searchParams }: PageProps<"/pricing"
           </p>
         )}
         <div className="mt-14">
-          <PricingGrid billing={billing} />
+          <Suspense fallback={<PricingGrid billing={null} />}>
+            <GridWithBilling />
+          </Suspense>
         </div>
       </div>
       <Faq scene={2} />

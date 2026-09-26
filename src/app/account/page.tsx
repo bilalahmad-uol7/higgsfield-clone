@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { requireUser } from "@/lib/auth/session";
+import { redirect } from "next/navigation";
+import { getAuthUserId, requireUser } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
 import { ACTIVE_STATUSES, getPack, getPlan } from "@/lib/stripe/catalog";
 import { KIND_LABEL, REASON_LABEL, formatCredits, formatDate, formatMoney } from "@/lib/format";
@@ -18,26 +19,28 @@ const NOTICES: Record<string, string> = {
 };
 
 export default async function AccountPage({ searchParams }: PageProps<"/account">) {
-  const profile = await requireUser("/account");
   const { checkout, billing } = await searchParams;
   const supabase = await createClient();
+  const userId = await getAuthUserId();
+  if (!userId) redirect("/login?next=%2Faccount");
 
-  // Filter by owner explicitly: RLS alone would let an admin's account page
-  // list every user's rows.
-  const [{ data: purchases }, { data: ledger }, takes] = await Promise.all([
+  // Everything loads in parallel. Owner filters are explicit: RLS alone
+  // would let an admin's account page list every user's rows.
+  const [profile, { data: purchases }, { data: ledger }, takes] = await Promise.all([
+    requireUser("/account"),
     supabase
       .from("transactions")
       .select("*")
-      .eq("user_id", profile.id)
+      .eq("user_id", userId)
       .order("created_at", { ascending: false })
       .limit(20),
     supabase
       .from("credit_ledger")
       .select("*")
-      .eq("user_id", profile.id)
+      .eq("user_id", userId)
       .order("created_at", { ascending: false })
       .limit(15),
-    recentGenerations(profile.id, HISTORY_LIMIT),
+    recentGenerations(userId, HISTORY_LIMIT),
   ]);
 
   const plan = getPlan(profile.plan_id);

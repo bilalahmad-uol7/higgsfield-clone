@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Instrument_Serif, Inter_Tight, JetBrains_Mono } from "next/font/google";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
@@ -44,7 +45,10 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({ children }: LayoutProps<"/">) {
+// Resolves the signed-in viewer for the header. Rendered inside Suspense so
+// the page never waits on the profile query: the shell streams immediately
+// and the account slot fills in when the session resolves.
+async function SessionHeader() {
   const profile = await getSessionProfile();
   const viewer = profile
     ? {
@@ -55,7 +59,10 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         isAdmin: profile.role === "admin",
       }
     : null;
+  return <SiteHeader viewer={viewer} />;
+}
 
+export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
@@ -63,7 +70,9 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="flex min-h-full flex-col">
         <SmoothScroll>
-          <SiteHeader viewer={viewer} />
+          <Suspense fallback={<SiteHeader viewer={undefined} />}>
+            <SessionHeader />
+          </Suspense>
           <main className="flex-1">{children}</main>
           <SiteFooter />
         </SmoothScroll>

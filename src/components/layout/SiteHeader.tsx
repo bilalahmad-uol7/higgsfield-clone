@@ -10,18 +10,33 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { HiggsfieldLogo } from "@/components/ui/HiggsfieldLogo";
 import { AccountMenu, Avatar, SignOutButton, type Viewer } from "@/components/layout/AccountMenu";
+import { useHoverMenu } from "@/components/ui/useHoverMenu";
 import { cn } from "@/lib/cn";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 function Dropdown({ label, items }: { label: string; items: NavLeaf[] }) {
+  const { open, rootProps, triggerProps, panelProps } = useHoverMenu();
   return (
-    <div className="group/dd relative">
-      <button className="slate flex h-14 items-center gap-1.5 px-3 text-white-70 transition-colors group-hover/dd:text-paper group-focus-within/dd:text-paper">
+    <div {...rootProps} className="relative">
+      <button
+        {...triggerProps}
+        aria-haspopup="menu"
+        className={cn(
+          "slate flex h-14 items-center gap-1.5 px-3 transition-colors",
+          open ? "text-paper" : "text-white-70",
+        )}
+      >
         {label}
-        <span className="text-[8px] transition-transform group-hover/dd:rotate-180">▼</span>
+        <span className={cn("text-[8px] transition-transform", open && "rotate-180")}>▼</span>
       </button>
-      <div className="invisible absolute left-0 top-full w-72 translate-y-1 border border-white-10 bg-ink/95 p-2 opacity-0 backdrop-blur-xl transition-all duration-200 group-focus-within/dd:visible group-focus-within/dd:translate-y-0 group-focus-within/dd:opacity-100 group-hover/dd:visible group-hover/dd:translate-y-0 group-hover/dd:opacity-100">
+      <div
+        {...panelProps}
+        className={cn(
+          "absolute left-0 top-full w-72 border border-white-10 bg-ink/95 p-2 backdrop-blur-xl transition-all duration-200",
+          open ? "visible translate-y-0 opacity-100" : "invisible translate-y-1 opacity-0",
+        )}
+      >
         {items.map((item, i) => (
           <Link
             key={item.label}
@@ -43,7 +58,11 @@ function Dropdown({ label, items }: { label: string; items: NavLeaf[] }) {
   );
 }
 
-export function SiteHeader({ viewer }: { viewer: Viewer | null }) {
+/**
+ * `viewer` is undefined while the session is still streaming in (the layout
+ * never blocks the page on it), null when signed out.
+ */
+export function SiteHeader({ viewer }: { viewer: Viewer | null | undefined }) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -99,7 +118,9 @@ export function SiteHeader({ viewer }: { viewer: Viewer | null }) {
           </nav>
 
           <div className="ml-auto flex items-center gap-2">
-            {viewer ? (
+            {viewer === undefined ? (
+              <span aria-hidden className="block h-9 w-24 animate-pulse bg-white-6" />
+            ) : viewer ? (
               <AccountMenu viewer={viewer} />
             ) : (
               <>
