@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
 import { signOut } from "@/app/auth/actions";
 import { useCredits, useGenerationStore } from "@/lib/generation/store";
+import { useHoverMenu } from "@/components/ui/useHoverMenu";
 import { cn } from "@/lib/cn";
 
 export type Viewer = {
@@ -50,46 +50,17 @@ export function Avatar({ viewer, className }: { viewer: Viewer; className?: stri
 export function AccountMenu({ viewer }: { viewer: Viewer }) {
   // Reflects spends/refunds made in the studio without a page reload.
   const credits = useCredits(viewer.credits);
-  const [open, setOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
-
-  // Close on Escape or a click outside the menu.
-  useEffect(() => {
-    if (!open) return;
-    function onPointerDown(e: PointerEvent) {
-      if (!menuRef.current?.contains(e.target as Node)) setOpen(false);
-    }
-    function onKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") setOpen(false);
-    }
-    document.addEventListener("pointerdown", onPointerDown);
-    document.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.removeEventListener("pointerdown", onPointerDown);
-      document.removeEventListener("keydown", onKeyDown);
-    };
-  }, [open]);
+  const { open, rootProps, triggerProps, panelProps } = useHoverMenu();
   return (
     <div className="flex items-center gap-3">
       <Link href="/pricing" className="slate hidden text-white-60 transition-colors hover:text-paper sm:block">
         <span className="text-paper">{credits.toLocaleString()}</span> cr
       </Link>
-      <div
-        ref={menuRef}
-        className="relative hidden lg:block"
-        onMouseEnter={() => setOpen(true)}
-        onMouseLeave={() => setOpen(false)}
-        onBlur={(e) => {
-          if (!e.currentTarget.contains(e.relatedTarget)) setOpen(false);
-        }}
-      >
+      <div {...rootProps} className="relative hidden lg:block">
         <button
           aria-label="Account menu"
           aria-haspopup="menu"
-          aria-expanded={open}
-          // Opens only: hovering already opened it, so a toggle would shut it
-          // on the same gesture. Escape, an outside click or leaving closes it.
-          onClick={() => setOpen(true)}
+          {...triggerProps}
           className={cn(
             "flex h-9 w-9 items-center justify-center overflow-hidden border transition-colors",
             open ? "border-paper" : "border-white-16",
@@ -98,11 +69,7 @@ export function AccountMenu({ viewer }: { viewer: Viewer }) {
           <Avatar viewer={viewer} className="h-full w-full" />
         </button>
         <div
-          // Any choice in the menu closes it (links navigate client-side, so
-          // nothing else would).
-          onClick={(e) => {
-            if ((e.target as HTMLElement).closest("a, button")) setOpen(false);
-          }}
+          {...panelProps}
           className={cn(
             "absolute right-0 top-full w-64 border border-white-10 bg-ink/95 p-2 backdrop-blur-xl transition-all duration-200",
             open ? "visible translate-y-0 opacity-100" : "invisible translate-y-1 opacity-0",

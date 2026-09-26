@@ -1,11 +1,18 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { PricingCards } from "@/components/pricing/PricingCards";
 import { getSessionProfile } from "@/lib/auth/session";
 import { billingStateOf } from "@/lib/stripe/billing-state";
 import { SectionHead } from "@/components/layout/SectionHead";
 
-export async function PricingSection() {
-  const billing = billingStateOf(await getSessionProfile());
+// Plan state (current plan / switch buttons) depends on the session; stream
+// it in so the rest of the page never waits on the profile query. The
+// fallback is the same cards in their signed-out state, so nothing shifts.
+async function CardsWithBilling() {
+  return <PricingCards billing={billingStateOf(await getSessionProfile())} />;
+}
+
+export function PricingSection() {
   return (
     <section className="mx-auto max-w-[1440px] px-4 py-28 md:px-8 md:py-40">
       <SectionHead
@@ -26,7 +33,9 @@ export async function PricingSection() {
         }
       />
       <div className="mt-14">
-        <PricingCards billing={billing} />
+        <Suspense fallback={<PricingCards billing={null} />}>
+          <CardsWithBilling />
+        </Suspense>
       </div>
     </section>
   );
