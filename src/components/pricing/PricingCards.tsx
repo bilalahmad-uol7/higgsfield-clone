@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { PLANS } from "@/data/pricing";
+import { planCreditsForInvoice, planUnitAmount } from "@/lib/stripe/catalog";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/motion/Reveal";
 import { cn } from "@/lib/cn";
@@ -71,7 +72,19 @@ export function PricingCards({ billing = null }: { billing?: BillingState }) {
                 <span className="display text-7xl">${price}</span>
                 <span className="slate text-white-40">/ {plan.unit}</span>
               </div>
-              <p className="slate mt-2 text-white-40">{plan.credits.toLocaleString()} credits</p>
+              {/* Same helpers the webhook uses to grant credits, so the card
+                  always matches what a purchase actually delivers. */}
+              <p className="slate mt-2 text-white-40">
+                {planCreditsForInvoice(plan.id, interval).toLocaleString()} credits /{" "}
+                {annual ? "year" : "month"}
+                {plan.unit === "seat" && " per seat"}
+              </p>
+              {annual && (
+                <p className="slate mt-1 text-white-24">
+                  Billed ${(planUnitAmount(plan, "annual") / 100).toLocaleString()} yearly
+                  {plan.unit === "seat" && " per seat"}
+                </p>
+              )}
 
               <ul className="mt-8 flex flex-1 flex-col gap-3 border-t border-white-8 pt-6">
                 {plan.features.map((f) => (
