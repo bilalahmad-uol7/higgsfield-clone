@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { requireUser } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
-import { ACTIVE_STATUSES, getPlan } from "@/lib/stripe/catalog";
+import { ACTIVE_STATUSES, getPack, getPlan } from "@/lib/stripe/catalog";
 import { KIND_LABEL, REASON_LABEL, formatCredits, formatDate, formatMoney } from "@/lib/format";
 import { SectionHead } from "@/components/layout/SectionHead";
 import { Button } from "@/components/ui/Button";
@@ -118,7 +118,9 @@ export default async function AccountPage({ searchParams }: PageProps<"/account"
                   <tr key={t.id} className="border-b border-white-8 last:border-0">
                     <td className="px-4 py-3 text-white-60">{formatDate(t.created_at)}</td>
                     <td className="px-4 py-3 text-paper">
-                      {getPlan(t.plan_id)?.name ?? t.plan_id ?? "—"}
+                      {t.kind === "credit_pack"
+                        ? (getPack(t.plan_id)?.label ?? t.plan_id)
+                        : (getPlan(t.plan_id)?.name ?? t.plan_id ?? "—")}
                       {t.plan_interval && <span className="text-white-40"> · {t.plan_interval}</span>}
                     </td>
                     <td className="px-4 py-3 text-white-60">{KIND_LABEL[t.kind] ?? t.kind}</td>

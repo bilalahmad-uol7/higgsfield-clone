@@ -21,9 +21,14 @@ if (!key) throw new Error("STRIPE_SECRET_KEY missing — run with --env-file=.en
 if (key.startsWith("sk_live")) throw new Error("Refusing to seed a LIVE Stripe account. Use a test key.");
 const stripe = new Stripe(key);
 
+// products.list (not search, which is eventually consistent) so an immediate
+// re-run finds what the previous run created.
+const existingProducts: Stripe.Product[] = [];
+for await (const product of stripe.products.list({ active: true, limit: 100 })) existingProducts.push(product);
+
 async function findOrCreateProduct(appId: string, name: string, description: string) {
-  const found = await stripe.products.search({ query: `metadata['app_id']:'${appId}' AND active:'true'` });
-  if (found.data[0]) return found.data[0];
+  const found = existingProducts.find((p) => p.metadata?.app_id === appId);
+  if (found) return found;
   return stripe.products.create({ name, description, metadata: { app: TAG, app_id: appId } });
 }
 

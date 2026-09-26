@@ -1,113 +1,199 @@
-// Mirrors supabase/migrations. Regenerate from the live schema with
-// `npm run db:types` after changing a migration.
-export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
+
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
 
 export type Database = {
-  public: {
-    Tables: {
-      profiles: {
-        Row: {
-          id: string;
-          email: string;
-          full_name: string | null;
-          avatar_url: string | null;
-          provider: string;
-          role: string;
-          credits: number;
-          plan_id: string | null;
-          plan_interval: string | null;
-          subscription_status: string | null;
-          stripe_customer_id: string | null;
-          stripe_subscription_id: string | null;
-          current_period_end: string | null;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id: string;
-          email: string;
-          full_name?: string | null;
-          avatar_url?: string | null;
-          provider?: string;
-          role?: string;
-          credits?: number;
-          plan_id?: string | null;
-          plan_interval?: string | null;
-          subscription_status?: string | null;
-          stripe_customer_id?: string | null;
-          stripe_subscription_id?: string | null;
-          current_period_end?: string | null;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: Partial<Database["public"]["Tables"]["profiles"]["Insert"]>;
-        Relationships: [];
-      };
-      credit_ledger: {
-        Row: {
-          id: number;
-          user_id: string;
-          delta: number;
-          reason: string;
-          ref: string;
-          created_at: string;
-        };
-        Insert: {
-          user_id: string;
-          delta: number;
-          reason: string;
-          ref: string;
-          created_at?: string;
-        };
-        Update: Partial<Database["public"]["Tables"]["credit_ledger"]["Insert"]>;
-        Relationships: [];
-      };
-      transactions: {
-        Row: {
-          id: string;
-          user_id: string | null;
-          stripe_object_id: string;
-          stripe_event_id: string;
-          stripe_customer_id: string | null;
-          kind: string;
-          plan_id: string | null;
-          plan_interval: string | null;
-          amount: number;
-          currency: string;
-          credits_granted: number;
-          customer_email: string | null;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          user_id?: string | null;
-          stripe_object_id: string;
-          stripe_event_id: string;
-          stripe_customer_id?: string | null;
-          kind: string;
-          plan_id?: string | null;
-          plan_interval?: string | null;
-          amount: number;
-          currency: string;
-          credits_granted?: number;
-          customer_email?: string | null;
-          created_at?: string;
-        };
-        Update: Partial<Database["public"]["Tables"]["transactions"]["Insert"]>;
-        Relationships: [];
-      };
-    };
-    Views: { [_ in never]: never };
-    Functions: {
-      is_admin: { Args: Record<PropertyKey, never>; Returns: boolean };
-      spend_credits: { Args: { p_user: string; p_amount: number; p_ref: string }; Returns: number };
-      refund_credits: { Args: { p_user: string; p_ref: string }; Returns: number };
-      grant_credits: {
-        Args: { p_user: string; p_amount: number; p_reason: string; p_ref: string };
-        Returns: number | null;
-      };
-    };
-    Enums: { [_ in never]: never };
-    CompositeTypes: { [_ in never]: never };
-  };
-};
+  
+  "public": {
+          Tables: {
+            "credit_ledger": {
+                  Row: {
+                    "created_at": string,"delta": number,"id": number,"reason": string,"ref": string,"user_id": string
+                  }
+                  Insert: {
+                    "created_at"?: string,"delta": number,"id"?: never,"reason": string,"ref": string,"user_id": string
+                  }
+                  Update: {
+                    "created_at"?: string,"delta"?: number,"id"?: never,"reason"?: string,"ref"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "credit_ledger_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"profiles": {
+                  Row: {
+                    "avatar_url": string | null,"created_at": string,"credits": number,"current_period_end": string | null,"email": string,"full_name": string | null,"id": string,"plan_id": string | null,"plan_interval": string | null,"provider": string,"role": string,"stripe_customer_id": string | null,"stripe_subscription_id": string | null,"subscription_status": string | null,"updated_at": string
+                  }
+                  Insert: {
+                    "avatar_url"?: string | null,"created_at"?: string,"credits"?: number,"current_period_end"?: string | null,"email": string,"full_name"?: string | null,"id": string,"plan_id"?: string | null,"plan_interval"?: string | null,"provider"?: string,"role"?: string,"stripe_customer_id"?: string | null,"stripe_subscription_id"?: string | null,"subscription_status"?: string | null,"updated_at"?: string
+                  }
+                  Update: {
+                    "avatar_url"?: string | null,"created_at"?: string,"credits"?: number,"current_period_end"?: string | null,"email"?: string,"full_name"?: string | null,"id"?: string,"plan_id"?: string | null,"plan_interval"?: string | null,"provider"?: string,"role"?: string,"stripe_customer_id"?: string | null,"stripe_subscription_id"?: string | null,"subscription_status"?: string | null,"updated_at"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"transactions": {
+                  Row: {
+                    "amount": number,"created_at": string,"credits_granted": number,"currency": string,"customer_email": string | null,"id": string,"kind": string,"plan_id": string | null,"plan_interval": string | null,"stripe_customer_id": string | null,"stripe_event_id": string,"stripe_object_id": string,"user_id": string | null
+                  }
+                  Insert: {
+                    "amount": number,"created_at"?: string,"credits_granted"?: number,"currency": string,"customer_email"?: string | null,"id"?: string,"kind": string,"plan_id"?: string | null,"plan_interval"?: string | null,"stripe_customer_id"?: string | null,"stripe_event_id": string,"stripe_object_id": string,"user_id"?: string | null
+                  }
+                  Update: {
+                    "amount"?: number,"created_at"?: string,"credits_granted"?: number,"currency"?: string,"customer_email"?: string | null,"id"?: string,"kind"?: string,"plan_id"?: string | null,"plan_interval"?: string | null,"stripe_customer_id"?: string | null,"stripe_event_id"?: string,"stripe_object_id"?: string,"user_id"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "transactions_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                }
+          }
+          Views: {
+            [_ in never]: never
+          }
+          Functions: {
+            "grant_credits":
+{ Args: { "p_amount": number,"p_reason": string,"p_ref": string,"p_user": string }; Returns: number
+                           },
+"is_admin":
+{ Args: Record<PropertyKey, never>; Returns: boolean
+                           },
+"refund_credits":
+{ Args: { "p_ref": string,"p_user": string }; Returns: number
+                           },
+"spend_credits":
+{ Args: { "p_amount": number,"p_ref": string,"p_user": string }; Returns: number
+                           }
+          }
+          Enums: {
+            [_ in never]: never
+          }
+          CompositeTypes: {
+            [_ in never]: never
+          }
+        }
+}
+
+type DatabaseWithoutInternals = Omit<Database, '__InternalSupabase'>
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never = never
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+  ? (DefaultSchema["Tables"] & DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : never
+
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+  ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : never
+
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+  ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : never
+
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never = never
+> = DefaultSchemaEnumNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+  ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+  : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never
+> = PublicCompositeTypeNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+  ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+  : never
+
+export const Constants = {
+  "public": {
+          Enums: {
+            
+          }
+        }
+} as const
+
